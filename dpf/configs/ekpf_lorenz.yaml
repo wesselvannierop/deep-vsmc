@@ -1,0 +1,42 @@
+# General
+n_particles: 1
+likelihood_sigma: 0.1
+
+data:
+  salt_prob: 0.0
+  awgn_std: 0.1
+  image_shape: [28, 28] # (do not change, see TODO)
+  observation_fn: null
+sample_dt: 0.02
+
+
+prior: null
+clip_range: [-50.0, 50.0] # clip the particles to this range (x and y could be [-35, 35])
+initial_state: ["true", 1.0] # mu, sigma
+sample_mean: True
+transition:
+  learn: False
+  sigma: 0.5
+evolution_model: lorenz
+
+model: ekpf # bootstrap, learned, ekpf
+experiment: lorenz
+
+sequence_length: 8
+batch_size: 32
+# batch_size: 64 # snellius
+nr_of_sequences: 1024
+
+val_sequence_length: 128
+val_batch_size: 32
+val_nr_of_sequences: 32 # == val_batch_size
+# wandb:
+#   project: dpf
+#   entity: wessel
+
+save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}"
+
+validation:
+  visualize_idx: 0
+  enable_compute_elbo: True
+  dump_results: True

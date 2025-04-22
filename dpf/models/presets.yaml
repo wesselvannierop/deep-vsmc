@@ -1,0 +1,55 @@
+models:
+  # Models ICASSP 2025 paper
+  - names:
+      - dpf_lorenz_awgn
+      - 20240910-174207-learned-awgn
+    huggingface:
+      repo_id: wesselvannierop/vsmc-lorenz
+      filename: 20240910-174207-learned-awgn_pf.keras
+    metadata:
+      description: |
+        DPF model trained on Lorenz dataset with different levels of AWGN noise.
+        This model is used in the ICASSP 2025 paper.
+
+  - names:
+      - dpf_lorenz_partial_observations
+      - 20240909-110841-learned-partial-observations
+    huggingface:
+      repo_id: wesselvannierop/vsmc-lorenz
+      filename: 20240909-110841-learned-partial-observations_pf.keras
+    metadata:
+      description: |
+        DPF model trained on Lorenz dataset with partial observations.
+        This model is used in the ICASSP 2025 paper.
+
+  - names:
+      - encoder_lorenz_partial_observations
+      - 20240909-134045-p_lorenz_encoder
+    huggingface:
+      repo_id: wesselvannierop/vsmc-lorenz
+      filename: 20240909-134045-p_lorenz_encoder.keras
+    metadata:
+      description: |
+        Image encoder trained supervised on Lorenz dataset with partial observations.
+        This model is used in the ICASSP 2025 paper.
+
+  - names:
+      - encoder_lorenz_awgn
+      - 20240909-143620-awgn_lorenz_encoder
+    huggingface:
+      repo_id: wesselvannierop/vsmc-lorenz
+      filename: 20240909-143620-awgn_lorenz_encoder.keras
+    metadata:
+      description: |
+        Image encoder trained supervised on Lorenz dataset with different levels of AWGN noise.
+        This model is used in the ICASSP 2025 paper.
+
+  - names:
+      - dpf_lorenz_general
+      - 20240814-130649-learned-general
+    huggingface:
+      repo_id: wesselvannierop/vsmc-lorenz
+      filename: 20240814-130649-learned-general_pf.keras
+    metadata:
+      description: |
+        DPF model trained on Lorenz dataset. I don't remember the specifics of this model.

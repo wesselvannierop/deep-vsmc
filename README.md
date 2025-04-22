@@ -1,0 +1,10 @@
+# Deep Variational Sequential Monte Carlo for High-Dimensional Observations
+
+Paper: [[ArXiv](https://arxiv.org/abs/2501.05982)]
+
+by [Wessel L. van Nierop](wesselvannierop.com), Nir Schlezinger, and Ruud J.G. van Sloun
+
+## Credits
+
+A large part of this codebase is based on [filterflow](https://github.com/JTT94/filterflow).
+We have extended that codebase to also work with jax through [keras 3.x](https://keras.io/keras_3/).

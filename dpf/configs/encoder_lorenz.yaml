@@ -1,0 +1,39 @@
+# General
+n_particles: 1
+likelihood_sigma: 0.5 # unused
+
+data:
+  salt_prob: 0.0
+  awgn_std: 0.1
+  image_shape: [28, 28]
+  observation_fn: mask
+  observation_fn_kwargs:
+    block_size: 4
+    p: 0.5
+sample_dt: 0.02
+
+# prior: null
+initial_state: [0.0, 35.0] # mu, sigma (TODO: is this used?)
+
+model: encoder
+experiment: lorenz
+
+sequence_length: 8
+batch_size: 32
+nr_of_sequences: 1024
+
+val_sequence_length: 128
+val_batch_size: 32
+val_nr_of_sequences: 32 # == val_batch_size
+# wandb:
+#   project: dpf
+#   entity: wessel
+
+save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}"
+checkpoint: "/app/results/dpf/lorenz_encoder/20240805-150519/lorenz_encoder.keras"
+
+validation:
+  visualize_idx: 0
+  enable_compute_elbo: True
+  dump_results: True
+  enable_test_transition_model: False

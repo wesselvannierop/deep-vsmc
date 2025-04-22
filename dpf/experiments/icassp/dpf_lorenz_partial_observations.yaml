@@ -1,0 +1,39 @@
+data:
+  salt_prob: 0.0
+  awgn_std: 0.1
+  image_shape: [28, 28]
+  observation_fn: mask
+  normalization_range: [0, 1]
+  observation_fn_kwargs:
+    block_size: 4
+    p: 0.1
+
+sample_dt: 0.02
+
+sequence_length: 8
+batch_size: 32
+nr_of_sequences: 1024
+# one epoch = 32 steps
+
+val_sequence_length: 128
+val_batch_size: 32
+val_nr_of_sequences: 32 # == val_batch_size
+
+observation_model:
+  likelihood_sigma: 0.1
+
+dpf:
+  n_particles: 28
+  enable_compute_elbo: True
+  dump_results: False
+  visualize_idx: null
+
+model: learned
+experiment: lorenz
+train: False
+n_val_epochs: 20
+
+save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{training.train}"
+
+training:
+  checkpoint: preset:dpf_lorenz_partial_observations

@@ -1,0 +1,50 @@
+font.family        : serif
+font.serif         : Times New Roman
+font.size          : 10
+# text.usetex        : true
+mathtext.fontset: cm
+figure.constrained_layout.use  : True
+
+# Set x axis
+xtick.direction : in
+xtick.major.size : 3
+xtick.major.width : 0.5
+xtick.minor.size : 1.5
+xtick.minor.width : 0.5
+xtick.minor.visible : True
+xtick.top : True
+
+# Set y axis
+ytick.direction : in
+ytick.major.size : 3
+ytick.major.width : 0.5
+ytick.minor.size : 1.5
+ytick.minor.width : 0.5
+ytick.minor.visible : True
+ytick.right : True
+
+# Set line widths
+axes.linewidth : 0.5
+grid.linewidth : 0.5
+lines.linewidth : 1.
+
+# Remove legend frame
+# legend.frameon : False
+
+# Always save as 'tight'
+# savefig.bbox : tight
+savefig.pad_inches : 0.05
+
+# text.latex.preamble : \usepackage{amsmath} \usepackage{amssymb}
+
+# Set color cycle
+# Set line style as well for black and white graphs
+    # https://matplotlib.org/stable/api/markers_api.html
+    # https://matplotlib.org/stable/gallery/lines_bars_and_markers/linestyles.html
+    # https://matplotlib.org/stable/gallery/color/named_colors.html
+axes.prop_cycle : (cycler('color', ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown']) + cycler('ls', ['-', '--', ':', '-.', [5, [10, 3]], [0, [3, 1, 1, 1]]]) + cycler('marker', ['x', 'o', 'v', 's', 'd', '+']))
+lines.markersize: 4
+
+# Set default figure size
+figure.figsize : 3.49, 2.4
+figure.dpi : 600
