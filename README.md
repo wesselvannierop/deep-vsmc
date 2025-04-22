@@ -1,7 +1,6 @@
 # Deep Variational Sequential Monte Carlo for High-Dimensional Observations
 
-Paper: [[ArXiv](https://arxiv.org/abs/2501.05982)]
-
+Paper: [[ArXiv](https://arxiv.org/abs/2501.05982)]; [[ICASSP 2025](https://doi.org/10.1109/ICASSP49660.2025.10889044)]
 by [Wessel L. van Nierop](wesselvannierop.com), Nir Schlezinger, and Ruud J.G. van Sloun
 
 ## Credits
