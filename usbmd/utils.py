@@ -2,7 +2,6 @@ import datetime
 from pathlib import Path
 from typing import Union
 
-import cv2
 import numpy as np
 from PIL import Image
 
@@ -136,7 +135,7 @@ def grayscale_to_rgb(image):
         ndarray: RGB image.
     """
     assert image.ndim == 2, "Input image must be grayscale."
-    return cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+    return np.stack([image] * 3, axis=-1)
 
 
 def preprocess_for_saving(images):

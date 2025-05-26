@@ -4,6 +4,10 @@ version = "0.1.0"
 description = ""
 authors = ["Wessel van Nierop <40076995+wesselvannierop@users.noreply.github.com>"]
 readme = "README.md"
+packages = [
+    { include = "vsmc" },
+    { include = "usbmd" },
+]
 
 
 [tool.poetry.dependencies]

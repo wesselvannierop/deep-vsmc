@@ -13,7 +13,6 @@ from keras import ops
 import tfp_wrapper as tfp
 import vsmc.ops as dpf_ops
 from experiments import debugging
-from pyutils.general import del_keys, rename_key
 from usbmd import log, tensor_ops
 from vsmc.data.lorenz_data import lorenz_kde_prior
 from vsmc.filterflow import SMC
@@ -37,6 +36,7 @@ from vsmc.models.base import BaseTrainer, update_instance_with_attributes
 from vsmc.models.preset_loader import from_preset
 from vsmc.prob import Distribution
 from vsmc.tf_prob import entropy_mc, mc_kld
+from vsmc.utils import del_keys, rename_key
 
 tfd = tfp.distributions
 

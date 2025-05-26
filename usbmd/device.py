@@ -3,7 +3,6 @@
 import os
 import shutil
 import subprocess as sp
-from typing import Union
 
 from usbmd import log
 
