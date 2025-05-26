@@ -4,7 +4,7 @@ import keras
 import numpy as np
 from keras import Sequential, layers, ops
 
-import tfp_wrapper as tfp
+import vsmc.tfp_wrapper as tfp
 import vsmc.ops as dpf_ops
 import vsmc.tf_prob  # pylint: disable=unused-import
 from usbmd import tensor_ops

@@ -13,7 +13,7 @@ import tensorflow as tf
 from keras import ops
 from tqdm import tqdm
 
-import tfp_wrapper as tfp
+import vsmc.tfp_wrapper as tfp
 import vsmc.filterflow as filterflow
 from usbmd import tensor_ops
 from usbmd.utils import save_to_gif, to_8bit

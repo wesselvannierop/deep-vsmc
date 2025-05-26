@@ -2,7 +2,7 @@ import warnings
 
 import keras
 
-import tfp_wrapper as tfp
+import vsmc.tfp_wrapper as tfp
 from vsmc.dpf_utils import GaussianTransitionModel, trim_velocity
 from vsmc.filterflow.proposal import BootstrapProposalModel
 

@@ -13,7 +13,7 @@ import warnings
 import keras
 from keras import ops
 
-import tfp_wrapper as tfp
+import vsmc.tfp_wrapper as tfp
 from usbmd.backend import jit
 from vsmc.prob import Distribution
 

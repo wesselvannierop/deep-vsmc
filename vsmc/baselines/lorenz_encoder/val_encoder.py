@@ -5,7 +5,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 import keras
 
-from experiments import setup_experiment
+from vsmc.experiments import setup_experiment
 from vsmc.baselines.lorenz_encoder.train_encoder import Dataset, debug, l2_loss
 from vsmc.models.preset_loader import from_preset
 

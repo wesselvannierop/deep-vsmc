@@ -8,8 +8,8 @@ import warnings
 import tensorflow as tf
 from keras import ops
 
-import tfp_wrapper as tfp
-from experiments import setup_experiment
+import vsmc.tfp_wrapper as tfp
+from vsmc.experiments import setup_experiment
 from usbmd import tensor_ops
 from vsmc.data.lorenz_data import LorenzPSF
 from vsmc.dpf_utils import get_evolution_model, trim_velocity

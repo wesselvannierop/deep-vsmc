@@ -33,10 +33,10 @@ def parse_args():
 import vsmc.runnable  # isort: skip
 
 args = parse_args()
-dpf.runnable.runnable(args.backend, args.device)
+vsmc.runnable.runnable(args.backend, args.device)
 
-from experiments import debugging, setup_experiment
-from vsmc.learned_pf import vsmc_run
+from vsmc.experiments import debugging, setup_experiment
+from vsmc.learned_pf import dpf_run
 
 if __name__ == "__main__":
 

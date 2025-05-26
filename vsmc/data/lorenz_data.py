@@ -12,7 +12,7 @@ from jax.scipy.stats import gaussian_kde as jax_kde
 from keras import ops
 from scipy.integrate import odeint
 
-import tfp_wrapper as tfp
+import vsmc.tfp_wrapper as tfp
 from usbmd import log, tensor_ops
 from usbmd.utils import translate
 from vsmc.data.utils import backwards_compatibility

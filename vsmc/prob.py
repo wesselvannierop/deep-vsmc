@@ -1,6 +1,6 @@
 import keras
 
-import tfp_wrapper as tfp
+import vsmc.tfp_wrapper as tfp
 from vsmc.keras_helpers import deserialize
 
 tfd = tfp.distributions

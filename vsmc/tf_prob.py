@@ -1,7 +1,7 @@
 import tensorflow as tf
 from keras import ops
 
-import tfp_wrapper as tfp
+import vsmc.tfp_wrapper as tfp
 
 tfd = tfp.distributions
 kl = tfd.kullback_leibler

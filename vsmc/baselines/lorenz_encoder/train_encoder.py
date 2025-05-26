@@ -15,7 +15,7 @@ import keras
 from keras import ops
 from wandb.integration.keras import WandbMetricsLogger
 
-from experiments import setup_experiment
+from vsmc.experiments import setup_experiment
 from vsmc.data.lorenz_data import LorenzPSF, lorenz_kde_prior
 from vsmc.dpf_utils import Masker
 from vsmc.models.vsmc import build_image_encoder
