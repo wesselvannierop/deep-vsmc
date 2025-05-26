@@ -32,7 +32,7 @@ model: bootstrap
 experiment: lorenz
 n_val_epochs: 20
 
-save_path: "{output_dir}/dpf/{experiment}/{timestamp}-bootstrap"
+save_path: "results/{experiment}/{timestamp}-bootstrap"
 
 transition:
   sigma: 3.0

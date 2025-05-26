@@ -36,7 +36,7 @@ wandb:
   project: dpf
   entity: wessel
 
-save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}-training={training.train}-p_occlusion={data.observation_fn_kwargs.p}-awgn={data.awgn_std[1]}"
+save_path: "results/{experiment}/{timestamp}-{model}-training={training.train}-p_occlusion={data.observation_fn_kwargs.p}-awgn={data.awgn_std[1]}"
 
 # For training
 training:

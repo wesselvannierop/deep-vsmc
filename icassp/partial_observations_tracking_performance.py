@@ -38,13 +38,11 @@ from vsmc.experiments import setup_experiment
 from vsmc.learned_pf import dpf_run
 from vsmc.sweeper import Sweeper
 
-OUTPUT_DIR = "results"
-
 if __name__ == "__main__":
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
     experiment_path = Path(
-        f"{OUTPUT_DIR}/dpf/lorenz/icassp/partial-observations-tracking-performance-250103"
+        f"results/lorenz/icassp/partial-observations-tracking-performance-250103"
     )
     config_paths = {
         "dpf": "dpf/experiments/icassp/dpf_lorenz_partial_observations.yaml",

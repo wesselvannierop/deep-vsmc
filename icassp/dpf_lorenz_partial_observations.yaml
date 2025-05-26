@@ -33,7 +33,7 @@ experiment: lorenz
 train: False
 n_val_epochs: 20
 
-save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{training.train}"
+save_path: "results/{experiment}/{timestamp}-{training.train}"
 
 training:
   checkpoint: preset:dpf_lorenz_partial_observations

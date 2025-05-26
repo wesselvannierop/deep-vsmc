@@ -168,7 +168,7 @@ class Experiment:
         return self.run
 
     def format_path(self, path, config: Config):
-        # Use config, timestamp, and output_dir to format the path
+        # Use config & timestamp to format the path
         format_kwargs = Config(dict_bool_to_key(**config.deep_copy()))
         timestamp = get_date_string()
         format_kwargs.timestamp = timestamp

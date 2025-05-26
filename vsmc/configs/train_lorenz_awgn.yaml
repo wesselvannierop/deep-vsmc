@@ -4,13 +4,14 @@ likelihood_sigma: 0.1
 
 data:
   salt_prob: 0.0
-  awgn_std: 0.1
+  awgn_std: [0.1, 0.6]
   image_shape: [28, 28]
-  observation_fn: mask
-  observation_fn_kwargs:
-    block_size: 4
-    p: 0.5
 sample_dt: 0.02
+
+val_data:
+  salt_prob: 0.0
+  awgn_std: 0.6
+  image_shape: [28, 28]
 
 prior: null
 clip_range: [-50.0, 50.0] # clip the particles to this range (x and y could be [-35, 35])
@@ -35,7 +36,7 @@ val_nr_of_sequences: 32 # == val_batch_size
 #   project: dpf
 #   entity: wessel
 
-save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}-fixed-noise"
+save_path: "results/{experiment}/{timestamp}-{model}-new-awgn={data.awgn_std}"
 
 # For training
 training:
@@ -53,6 +54,7 @@ training:
   enhance_gradient_steps: 2 # maybe try 2 again
 
 validation:
-  visualize_idx: 0
+  visualize_idx: null
   enable_compute_elbo: True
-  dump_results: True
+  dump_results: False
+n_val_epochs: 20

@@ -29,7 +29,7 @@ val_nr_of_sequences: 32 # == val_batch_size
 #   project: dpf
 #   entity: wessel
 
-save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}"
+save_path: "results/{experiment}/{timestamp}-{model}"
 checkpoint: preset:encoder_lorenz_partial_observations
 
 validation:
