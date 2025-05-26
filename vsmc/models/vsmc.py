@@ -4,9 +4,9 @@ import keras
 import numpy as np
 from keras import Sequential, layers, ops
 
-import vsmc.tfp_wrapper as tfp
 import vsmc.ops as dpf_ops
 import vsmc.tf_prob  # pylint: disable=unused-import
+import vsmc.tfp_wrapper as tfp
 from usbmd import tensor_ops
 from vsmc.data.lorenz_data import LorenzPSF
 from vsmc.dpf_utils import (
@@ -95,7 +95,6 @@ class ConvProposalModel(layers.Layer, ProposalModelBase):
         latent_channels: int = 4,
         equally_weighted_mixture=True,
         verbose=False,
-        diffusion: dict | None = None,
         nfeatbase=32,
         nfeat_proposal=32,
         **kwargs,
@@ -107,7 +106,6 @@ class ConvProposalModel(layers.Layer, ProposalModelBase):
         self.latent_channels = latent_channels
         self.equally_weighted_mixture = wrap_equally(equally_weighted_mixture, mixture)
         self.verbose = verbose
-        self.diffusion_dict = diffusion
         self.nfeatbase = nfeatbase
         self.nfeat_proposal = nfeat_proposal
 
@@ -131,9 +129,6 @@ class ConvProposalModel(layers.Layer, ProposalModelBase):
         if verbose:
             self.proposal.summary()
 
-        if diffusion is not None:
-            self.diffusion = DiffusionReconstructor(**diffusion)
-
     @classmethod
     def from_config(cls, config):
         config["verbose"] = False
@@ -146,7 +141,6 @@ class ConvProposalModel(layers.Layer, ProposalModelBase):
             "mixture": self.mixture,
             "latent_channels": self.latent_channels,
             "equally_weighted_mixture": self.equally_weighted_mixture,
-            "diffusion": self.diffusion_dict,
             "nfeatbase": self.nfeatbase,
             "nfeat_proposal": self.nfeat_proposal,
         }
@@ -184,16 +178,6 @@ class ConvProposalModel(layers.Layer, ProposalModelBase):
         )
         gmm = self.build_proposal(nn_output)
 
-        if hasattr(self, "diffusion"):
-            measurements = ops.repeat(
-                observation[:, None], ops.shape(particles)[1], axis=1
-            )
-            masks = ops.repeat(masks[:, None], ops.shape(particles)[1], axis=1)
-            initial_reconstruction = gmm.loc
-            gmm.loc = self.diffusion(
-                measurements, initial_reconstruction, masks, seed=seed
-            )
-
         return gmm
 
     def propose(self, proposal_dist, state: State, inputs, seed=None):
@@ -221,7 +205,6 @@ class ProposalModel(layers.Layer, ProposalModelBase):
         proposal_hidden_dim=256,
         model_velocity=False,
         verbose=False,
-        diffusion: dict | None = None,
         nfeatbase=32,
         **kwargs,
     ):
@@ -249,10 +232,6 @@ class ProposalModel(layers.Layer, ProposalModelBase):
             self.output_dim += mixture
 
         networks = self.init_networks()
-        if diffusion is not None:
-            self.diffusion = DiffusionModel(**diffusion)
-        else:
-            self.diffusion = None
         if verbose:
             for network in networks:
                 network.summary()
@@ -339,9 +318,6 @@ class ProposalModel(layers.Layer, ProposalModelBase):
         combined = ops.concatenate([particles, encoded_observation], axis=-1)
         nn_output = self.nn(combined)
         gmm = self.build_proposal(nn_output)
-
-        if self.diffusion is not None:
-            gmm = self.diffusion(gmm)
 
         return gmm
 

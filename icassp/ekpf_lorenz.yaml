@@ -13,7 +13,6 @@ data:
 sample_dt: 0.02
 
 prior: null
-clip_range: [-50.0, 50.0] # clip the particles to this range (x and y could be [-35, 35])
 initial_state: ["true", 1.0] # mu, sigma
 sample_mean: True
 transition:

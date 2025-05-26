@@ -7,7 +7,7 @@ def parse_args():
         "-c",
         "--config",
         type=str,
-        default="./vsmc/configs/dpf.yaml",
+        default="./configs/train_lorenz_awgn.yaml",
         help="Path to the config",
     )
     parser.add_argument(
@@ -41,13 +41,5 @@ from vsmc.learned_pf import dpf_run
 if __name__ == "__main__":
 
     config, run = setup_experiment(args.config, debug_run=args.debug_run)
-    if (args.debug_run or debugging) and config.data.get("limit_n_samples") is None:
-        # to also test checkpointing & validation
-        config.data.limit_n_samples = int(config.data.batch_size * 1.5)
-
-    if config.experiment == "lorenz":
-        from vsmc.data.lorenz import fast_debug_config
-
-        fast_debug_config(config, debugging=debugging)
 
     pf = dpf_run(config)

@@ -10,11 +10,11 @@ import pandas as pd
 import tensorflow as tf
 from keras import ops
 
-import vsmc.tfp_wrapper as tfp
 import vsmc.ops as dpf_ops
-from vsmc.experiments import debugging
+import vsmc.tfp_wrapper as tfp
 from usbmd import log, tensor_ops
 from vsmc.data.lorenz_data import lorenz_kde_prior
+from vsmc.experiments import debugging
 from vsmc.filterflow import SMC
 from vsmc.filterflow.resampling import (
     NeffCriterion,

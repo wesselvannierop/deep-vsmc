@@ -1,0 +1,62 @@
+data:
+  salt_prob: 0.0
+  awgn_std: [0.1, 0.6]
+  image_shape: [28, 28]
+  normalization_range: [0, 1]
+sample_dt: 0.02
+
+val_data:
+  salt_prob: 0.0
+  awgn_std: 0.6
+  image_shape: [28, 28]
+
+dpf:
+  n_particles: 28
+  enable_compute_elbo: True
+  dump_results: False
+  all_observations_at_epoch: 30
+  initial_state: [0.0, 35.0] # mu, sigma
+
+observation_model:
+  sigma: 0.1
+
+transition:
+  type: dense
+  kwargs:
+    mixture: 2
+    equally_weighted_mixture: False
+    clip: [-50, 50]
+
+proposal:
+  type: dense
+  kwargs:
+    mixture: 2
+    equally_weighted_mixture: False
+    clip: [-50, 50]
+
+model: learned # bootstrap, learned
+experiment: lorenz
+
+sequence_length: 8
+batch_size: 48
+nr_of_sequences: 1024
+
+val_sequence_length: 128
+val_batch_size: 32
+val_nr_of_sequences: 32
+
+save_path: "results/{experiment}/{timestamp}-{model}-awgn"
+
+# For training
+training:
+  train: True  # if True, train the model, otherwise load the trained model
+  n_retrain: 1
+  checkpoint: preset:dpf_lorenz_general
+  epochs: 120 # this is 32 * 90 = 2880 iterations
+  optimizer:
+    learning_rate: 1.e-4
+    global_clipnorm: 1000.0
+  validation_freq: 3
+  enhance_gradient_steps: 2
+
+n_val_epochs: 20

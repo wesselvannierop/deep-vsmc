@@ -1,12 +1,9 @@
 import os
-import shutil
 import sys
 import warnings
 from pathlib import Path
 
-import git
 import keras
-import pathspec
 import wandb
 
 from usbmd import Config, log
@@ -14,62 +11,6 @@ from usbmd.utils import get_date_string
 
 debugging = True if sys.gettrace() else False
 print("Debugging mode is on!" if debugging else "Debugging mode is off!")
-
-gitignore_path = Path(".gitignore")
-if gitignore_path.exists():
-    with gitignore_path.open("r") as f:
-        gitignore_patterns = f.read().splitlines()
-    spec = pathspec.PathSpec.from_lines("gitwildmatch", gitignore_patterns)
-else:
-    spec = pathspec.PathSpec([])
-
-
-def get_git_root(path: Path | str) -> Path:
-    git_repo = git.Repo(str(path), search_parent_directories=True)
-    git_root = git_repo.git.rev_parse("--show-toplevel")
-    return Path(git_root)
-
-
-REPO_ROOT = get_git_root(__file__)
-
-
-def copy_repo_py_files(to_dir: Path, verbose=False, zip=True):
-    """
-    Copy all the .py files in the repository to the `to_dir`.
-    Uses your .gitignore to exclude files and folders.
-    """
-
-    # Assert that the destination directory does not exist
-    assert not to_dir.exists(), "Destination directory already exists."
-
-    # Assert that the destination directory is outside the repository or is ignored by .gitignore
-    if to_dir.resolve().is_relative_to(REPO_ROOT):
-        assert spec.match_file(
-            to_dir.resolve().relative_to(REPO_ROOT)
-        ), "Destination directory lives inside this repository is not ignored by .gitignore. \
-            This means that the now copied files will be copied the next experiment too, \
-            leading to an ever growing number of files being copied."
-
-    to_dir.mkdir()
-
-    py_files = []
-    for root, dirs, files in os.walk(REPO_ROOT, topdown=True):
-        files = [f for f in files if not f[0] == "."]
-        dirs[:] = [d for d in dirs if not d[0] == "."]
-        dirs[:] = [d for d in dirs if not spec.match_file(d)]
-        py_files.extend(Path(root) / f for f in files if f.endswith(".py"))
-
-    for p in py_files:
-        to_p = to_dir / p.relative_to(REPO_ROOT)
-        if verbose:
-            print(f"Copying {p} to {to_p}")
-
-        to_p.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy(p, to_p)
-
-    if zip:
-        shutil.make_archive(to_dir, "zip", to_dir)
-        shutil.rmtree(to_dir)
 
 
 def dict_bool_to_key(**kwargs):
@@ -149,9 +90,6 @@ class Experiment:
 
         # Copy config file to experiment path
         self.config.save_to_yaml(self.path / "config.yaml")
-
-        # Copy repo code to experiment path
-        copy_repo_py_files(self.path / "code")
 
         # Freeze such that no new attributes can be added
         self.config.freeze()

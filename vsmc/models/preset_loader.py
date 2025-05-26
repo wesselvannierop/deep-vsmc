@@ -1,3 +1,4 @@
+import importlib.resources
 import warnings
 from pathlib import Path
 
@@ -5,9 +6,7 @@ import yaml
 from huggingface_hub import hf_hub_download
 
 # Load presets from yaml file
-presets_file = "dpf/models/presets.yaml"
-
-with open(presets_file) as f:
+with open(importlib.resources.files("vsmc") / "models" / "presets.yaml") as f:
     presets = yaml.safe_load(f)
 
 models = presets["models"]

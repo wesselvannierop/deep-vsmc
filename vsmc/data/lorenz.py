@@ -23,24 +23,6 @@ from vsmc.dpf_utils import Masker
 
 tfd = tfp.distributions
 
-# TEMP_DIR = "temp"
-TEMP_DIR = "temp"
-
-
-def fast_debug_config(config, debugging=True):
-    if debugging:
-        warnings.warn("Using fast debug config!")
-        fast_config = dict(
-            n_particles=4,
-            sequence_length=3,
-            batch_size=2,
-            nr_of_sequences=2,
-            val_sequence_length=3,
-            val_batch_size=2,
-            val_nr_of_sequences=2,
-        )
-        config.update(fast_config)
-
 
 def evolution_process_taylor(
     x, coefficients=2, delta_t=0.02, sigma=10, rho=28, beta=8 / 3
