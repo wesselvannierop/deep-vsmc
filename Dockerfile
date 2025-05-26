@@ -17,6 +17,6 @@ COPY pyproject.toml poetry.lock ./
 
 # Install dependencies
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR --mount=type=ssh \
-    poetry install --no-root --with torch,tensorflow,jax
+    poetry install --with torch,tensorflow,jax
 
 ENV PYTHONPATH="${PYTHONPATH}:/vsmc"

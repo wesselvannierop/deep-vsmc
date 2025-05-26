@@ -30,7 +30,6 @@ val_nr_of_sequences: 32 # == val_batch_size
 #   entity: wessel
 
 save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}"
-checkpoint: "/app/results/dpf/lorenz_encoder/20240805-150519/lorenz_encoder.keras"
 
 validation:
   visualize_idx: 0

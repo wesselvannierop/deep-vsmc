@@ -695,16 +695,3 @@ def compute_snr(noise_std=0.1):
     mean_snr_dB = 10 * np.log10(mean_snr)
 
     return mean_snr, mean_snr_dB
-
-
-if __name__ == "__main__":
-    # RUN USING: CUDA_VISIBLE_DEVICES="{some_free_gpu_id}" python data/lorenz.py
-
-    # Will pickle the Lorenz system
-    Lorenz()
-    lorenz_kde_prior(use_cache=False)
-
-    # For ICASSP presentation:
-    plt.style.use("/app/pyutils/styles/icassp.mplstyle")
-    plt.style.use("/app/pyutils/styles/darkmode.mplstyle")
-    plot_kde_prior([-20, 20, -25, 25, 0, 50], colorbar=False, no_labels=True)

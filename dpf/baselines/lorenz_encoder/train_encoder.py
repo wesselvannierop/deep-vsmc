@@ -71,7 +71,7 @@ config_partial_observations = dict(
     val_awgn_std=0.1,
     p_range=(0.0, 0.8),
     val_p_range=(0.8, 0.8),
-    save_path="{output_dir}/dpf/lorenz_encoder/{timestamp}-p",
+    save_path="experiments/dpf/lorenz_encoder/{timestamp}-p",
     wandb=dict(project="lorenz_encoder", entity="wessel"),
 )
 config_awgn_noise = dict(
@@ -79,7 +79,7 @@ config_awgn_noise = dict(
     val_awgn_std=0.6,
     p_range=(0.0, 0.0),
     val_p_range=(0.0, 0.0),
-    save_path="{output_dir}/dpf/lorenz_encoder/{timestamp}-awgn",
+    save_path="experiments/dpf/lorenz_encoder/{timestamp}-awgn",
     wandb=dict(project="lorenz_encoder", entity="wessel"),
 )
 # root_config = config_partial_observations

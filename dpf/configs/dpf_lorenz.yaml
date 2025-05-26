@@ -42,7 +42,6 @@ save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}-training={training
 training:
   train: True  # if True, train the model, otherwise load the trained model
   n_retrain: 1
-  checkpoint: "/app/results/dpf/lorenz/20240809-145635-True/pf.keras"
   epochs: 120 # this is 32 * 90 = 2880 iterations
   all_observations_at_epoch: 30
   optimizer:
