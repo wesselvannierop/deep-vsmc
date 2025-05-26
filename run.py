@@ -30,13 +30,13 @@ def parse_args():
     return parser.parse_args()
 
 
-import dpf.runnable  # isort: skip
+import vsmc.runnable  # isort: skip
 
 args = parse_args()
 dpf.runnable.runnable(args.backend, args.device)
 
-from dpf.learned_pf import dpf_run
 from experiments import debugging, setup_experiment
+from vsmc.learned_pf import vsmc_run
 
 if __name__ == "__main__":
 
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         config.data.limit_n_samples = int(config.data.batch_size * 1.5)
 
     if config.experiment == "lorenz":
-        from dpf.data.lorenz import fast_debug_config
+        from vsmc.data.lorenz import fast_debug_config
 
         fast_debug_config(config, debugging=debugging)
 
