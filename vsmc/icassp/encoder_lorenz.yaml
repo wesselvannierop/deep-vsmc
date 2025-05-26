@@ -6,10 +6,7 @@ data:
   salt_prob: 0.0
   awgn_std: 0.1
   image_shape: [28, 28]
-  observation_fn: mask
-  observation_fn_kwargs:
-    block_size: 4
-    p: 0.5
+  observation_fn: null
 sample_dt: 0.02
 
 # prior: null
@@ -30,9 +27,11 @@ val_nr_of_sequences: 32 # == val_batch_size
 #   entity: wessel
 
 save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}"
+checkpoint: preset:encoder_lorenz_awgn
 
 validation:
-  visualize_idx: 0
-  enable_compute_elbo: True
-  dump_results: True
+  visualize_idx: null
+  enable_compute_elbo: False
+  dump_results: False
   enable_test_transition_model: False
+n_val_epochs: 20

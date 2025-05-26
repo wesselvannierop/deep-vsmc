@@ -5,10 +5,12 @@ likelihood_sigma: 0.1
 data:
   salt_prob: 0.0
   awgn_std: 0.1
-  image_shape: [28, 28] # (do not change, see TODO)
+  image_shape: [28, 28]
   observation_fn: null
+  observation_fn_kwargs:
+    block_size: 4
+    p: 0.1
 sample_dt: 0.02
-
 
 prior: null
 clip_range: [-50.0, 50.0] # clip the particles to this range (x and y could be [-35, 35])
@@ -17,7 +19,7 @@ sample_mean: True
 transition:
   learn: False
   sigma: 0.5
-evolution_model: lorenz
+evolution_model: velocity
 
 model: ekpf # bootstrap, learned, ekpf
 experiment: lorenz
@@ -37,6 +39,7 @@ val_nr_of_sequences: 32 # == val_batch_size
 save_path: "{output_dir}/dpf/{experiment}/{timestamp}-{model}"
 
 validation:
-  visualize_idx: 0
+  visualize_idx: null
   enable_compute_elbo: True
-  dump_results: True
+  dump_results: False
+n_val_epochs: 20

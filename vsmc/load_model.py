@@ -4,6 +4,7 @@ import zipfile
 from pathlib import Path
 
 import keras
+
 from usbmd import log
 
 
@@ -35,18 +36,10 @@ def update_config(json_data, **kwargs):
     return config
 
 
-old_content = ["dpf.experiments", "ops_action_selection"]
-new_content = ["dpf.data", "dpf.filterflow.action.lines"]
-
-
 def model_from_json(path, custom_objects=None, **kwargs):
     # Load file
     with open(path, "r", encoding="utf-8") as file:
         content = file.read()
-
-    # Update legacy module names
-    for old, new in zip(old_content, new_content):
-        content = content.replace(old, new)
 
     # Load json
     json_data = json.loads(content)

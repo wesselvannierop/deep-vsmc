@@ -7,7 +7,7 @@ def parse_args():
         "-c",
         "--config",
         type=str,
-        default="./dpf/configs/dpf.yaml",
+        default="./vsmc/configs/dpf.yaml",
         help="Path to the config",
     )
     parser.add_argument(

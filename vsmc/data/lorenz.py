@@ -1,7 +1,7 @@
 if __name__ == "__main__":
     import vsmc.runnable  # isort: skip
 
-    dpf.runnable.runnable(device="auto:1", hide_first_for_tf=False)
+    vsmc.runnable.runnable(device="auto:1", hide_first_for_tf=False)
 
 import math
 import warnings
@@ -13,8 +13,8 @@ import tensorflow as tf
 from keras import ops
 from tqdm import tqdm
 
-import vsmc.tfp_wrapper as tfp
 import vsmc.filterflow as filterflow
+import vsmc.tfp_wrapper as tfp
 from usbmd import tensor_ops
 from usbmd.utils import save_to_gif, to_8bit
 from vsmc.data.lorenz_data import Lorenz, LorenzPSF, get_lorenz_kwargs
