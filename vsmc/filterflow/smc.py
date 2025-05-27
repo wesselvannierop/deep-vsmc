@@ -353,7 +353,7 @@ class SMC(Filter):
 
         for i in range(self.enhance_gradient_steps):
             proposal_dist = self._proposal_model.proposal_dist(
-                state.particles, observation, inputs, seed4
+                state.particles, observation
             )
             if self.store_proposal and proposal_dists is not None:
                 proposal_dists.append(proposal_dist)

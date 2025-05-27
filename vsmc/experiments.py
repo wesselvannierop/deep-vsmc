@@ -87,6 +87,7 @@ class Experiment:
         keras.utils.set_random_seed(self.seed)
 
         self.path = self.format_path(self.path, self.config)
+        config.save_path = self.path
 
         # Copy config file to experiment path
         self.config.save_to_yaml(self.path / "config.yaml")

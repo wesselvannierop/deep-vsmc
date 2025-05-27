@@ -59,7 +59,7 @@ def evolution_process_taylor(
 
 def lorenz_experiment(config, state2coord):
     observation_model = LorenzObservationModel(
-        sigma=config.observation_model.likelihood_sigma,
+        sigma=config.observation_model.sigma,
         state2coord=state2coord,
         image_shape=config.data.image_shape[:2],
     )
@@ -140,7 +140,7 @@ def lorenz_experiment_data(config, example=True, example_name="lorenz.gif"):
         masks = ops.cast(masks, "float32") * 0.5
         masks = to_8bit(masks, dynamic_range=[0, 1], pillow=False)
         imgs += masks
-        save_to_gif(imgs, config.save_path / example_name)
+        save_to_gif(imgs, Path(config.save_path) / example_name)
 
     return dataset, val_dataset
 

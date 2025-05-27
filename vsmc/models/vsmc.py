@@ -1,4 +1,5 @@
 import warnings
+from math import prod
 
 import keras
 import numpy as np
@@ -83,110 +84,6 @@ def gaussian_from_nn(
     sigma = ops.clip(sigma, 1e-3, 1e3)
 
     return mu, sigma, mixture_logits
-
-
-@keras.saving.register_keras_serializable()
-class ConvProposalModel(layers.Layer, ProposalModelBase):
-    def __init__(
-        self,
-        input_size: tuple = (256, 256),
-        clip=None,
-        mixture: int = 1,
-        latent_channels: int = 4,
-        equally_weighted_mixture=True,
-        verbose=False,
-        nfeatbase=32,
-        nfeat_proposal=32,
-        **kwargs,
-    ):
-        super().__init__(**kwargs)
-        self.input_size = input_size
-        self.clip = clip
-        self.mixture = mixture
-        self.latent_channels = latent_channels
-        self.equally_weighted_mixture = wrap_equally(equally_weighted_mixture, mixture)
-        self.verbose = verbose
-        self.nfeatbase = nfeatbase
-        self.nfeat_proposal = nfeat_proposal
-
-        self.observation_encoder = get_image_encoder_model(
-            nfeatbase=self.nfeatbase, out_channels=latent_channels
-        )
-        if verbose:
-            self.observation_encoder.summary()
-        self.state_dims = (*np.array(input_size) // 8, 4)
-
-        in_channels = self.latent_channels * 2
-        out_channels = 2 * self.latent_channels * self.mixture
-        if not self.equally_weighted_mixture:
-            out_channels += self.mixture
-
-        self.proposal = get_proposal_model(
-            in_channels=in_channels,
-            out_channels=out_channels,
-            nfeat=self.nfeat_proposal,
-        )
-        if verbose:
-            self.proposal.summary()
-
-    @classmethod
-    def from_config(cls, config):
-        config["verbose"] = False
-        return cls(**config)
-
-    def get_config(self):
-        return {
-            "input_size": self.input_size,
-            "clip": self.clip,
-            "mixture": self.mixture,
-            "latent_channels": self.latent_channels,
-            "equally_weighted_mixture": self.equally_weighted_mixture,
-            "nfeatbase": self.nfeatbase,
-            "nfeat_proposal": self.nfeat_proposal,
-        }
-
-    def build_proposal(self, nn_output, *args, **kwargs):
-        return GaussianMixture(
-            *gaussian_from_nn(
-                nn_output,
-                state_dims=self.state_dims,
-                clip=self.clip,
-                mixture=self.mixture,
-                equally_weighted_mixture=self.equally_weighted_mixture,
-                *args,
-                **kwargs,
-            ),
-            reinterpreted_batch_ndims=2,  # TODO: hardcoded 2
-        )
-
-    def proposal_dist(self, particles, observation, inputs, seed):
-        return self(particles, observation, inputs, seed)
-
-    def call(self, particles, observation, masks, seed):
-        # batch_size, n_particles, *latent_dims = ops.shape(particles)
-        encoded_observation = self.observation_encoder(observation)
-
-        # Broadcast to n_particles
-        encoded_observation = ops.broadcast_to(
-            encoded_observation[:, None], ops.shape(particles)
-        )
-
-        # Run neural proposal
-        combined = ops.concatenate([particles, encoded_observation], axis=-1)
-        nn_output = tensor_ops.func_with_one_batch_dim(
-            self.proposal, combined, n_batch_dims=2
-        )
-        gmm = self.build_proposal(nn_output)
-
-        return gmm
-
-    def propose(self, proposal_dist, state: State, inputs, seed=None):
-        proposed_particles = proposal_dist.sample(seed=seed)
-        return state.evolve(particles=proposed_particles)
-
-    def loglikelihood(self, proposal_dist, proposed_state: State, inputs):
-        log_prob = proposal_dist.log_prob(proposed_state.particles)
-        return log_prob
 
 
 @keras.saving.register_keras_serializable()
@@ -331,91 +228,11 @@ class ProposalModel(layers.Layer, ProposalModelBase):
 
 
 @keras.saving.register_keras_serializable()
-class ConvTransitionModel(layers.Layer, TransitionModelBase):
-    def __init__(
-        self,
-        state_dims: tuple = (32, 32, 4),
-        mixture: int = 1,
-        equally_weighted_mixture=True,
-        nfeatbase=32,
-        **kwargs,
-    ):
-        super().__init__(**kwargs)
-        self.state_dims = state_dims
-        self.mixture = mixture
-        self.equally_weighted_mixture = wrap_equally(equally_weighted_mixture, mixture)
-        self.nfeatbase = nfeatbase
-        self.clip = None  # TODO
-
-        out_channels = 2 * state_dims[-1] * self.mixture
-        if not self.equally_weighted_mixture:
-            out_channels += self.mixture
-
-        transition = get_proposal_model(
-            in_channels=4,
-            out_channels=out_channels,
-            nfeat=self.nfeatbase,
-            name="transition",
-            return_layers=True,
-        )
-        transition = transition[1:]
-        transition = [layers.InputLayer(state_dims)] + transition
-        self.transition = Sequential(transition, name="transition")
-
-    @classmethod
-    def from_config(cls, config):
-        if not "nfeatbase" in config:
-            config["nfeatbase"] = config.pop("nfeat")  # Backwards compatibility
-        return cls(**config)
-
-    def get_config(self):
-        return {
-            "state_dims": self.state_dims,
-            "mixture": self.mixture,
-            "equally_weighted_mixture": self.equally_weighted_mixture,
-            "nfeatbase": self.nfeatbase,
-        }
-
-    def build_transition(self, nn_output, *args, **kwargs):
-        return GaussianMixture(
-            *gaussian_from_nn(
-                nn_output,
-                state_dims=self.state_dims,
-                clip=self.clip,
-                mixture=self.mixture,
-                equally_weighted_mixture=self.equally_weighted_mixture,
-                *args,
-                **kwargs,
-            ),
-            reinterpreted_batch_ndims=2,  # TODO: hardcoded 2
-        )
-
-    def transition_dist(self, state: State):
-        return self(state.particles)
-
-    def call(self, particles):
-        nn_output = tensor_ops.func_with_one_batch_dim(
-            self.transition, particles, n_batch_dims=2
-        )
-        return self.build_transition(nn_output)
-
-    def loglikelihood(self, prior_state, proposed_state, inputs):
-        dist = self.transition_dist(prior_state)
-        log_prob = dist.log_prob(proposed_state.particles)
-        return log_prob
-
-    def sample(self, state, inputs, seed=None):
-        dist = self.transition_dist(state)
-        proposed_particles = dist.sample(seed=seed)
-        return state.evolve(particles=proposed_particles)
-
-
-@keras.saving.register_keras_serializable()
 class TransitionModel(layers.Layer, TransitionModelBase):
     def __init__(
         self,
-        mixture: int = 1,
-        state_dims: int = 2,
+        mixture,
+        state_dims: int,
         clip=None,
         equally_weighted_mixture=True,
         depth=0,
@@ -523,23 +340,17 @@ def setup_vsmc(config, coord_dims, verbose=True):
     transition_type = config.transition.pop("type")
     if transition_type == "gaussian":
         transition_model = GaussianTransitionModel(
-            state_dims=state_dims,
+            state_dims=prod(state_dims),
             evolution_model=evolution_model,
             **config.transition.get("kwargs", {}),
         )
     elif transition_type == "dense":
         transition_model = TransitionModel(
-            state_dims=state_dims,
+            state_dims=prod(state_dims),
             model_velocity=model_velocity,
             verbose=verbose,
             **config.transition.get("kwargs", {}),
         )
-    elif transition_type == "conv":
-        transition_model = ConvTransitionModel(
-            state_dims=state_dims,
-            **config.transition.get("kwargs", {}),
-        )
-        transition_model.transition.summary()
     else:
         raise ValueError(f"Unknown transition model: {transition_type}")
 
@@ -551,15 +362,8 @@ def setup_vsmc(config, coord_dims, verbose=True):
     if proposal_type == "dense":
         proposal_model = ProposalModel(
             input_size=get_input_size(config),
-            state_dims=state_dims,
+            state_dims=prod(state_dims),
             model_velocity=model_velocity,
-            verbose=verbose,
-            **config.proposal.get("kwargs", {}),
-        )
-    elif proposal_type == "conv":
-        proposal_model = ConvProposalModel(
-            input_size=get_input_size(config),
-            latent_channels=4,  # TODO: hardcoded
             verbose=verbose,
             **config.proposal.get("kwargs", {}),
         )
