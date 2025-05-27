@@ -16,13 +16,13 @@ import keras
 import tensorflow as tf
 from jax.tree_util import register_pytree_node
 from keras import ops
+
 from usbmd.tensor_ops import extend_n_dims
 
 
 class StateMethods:
     ATTRIBUTES = [
         "particles",
-        "entropy",
         "log_weights",
         "weights",
         "log_likelihoods",
@@ -145,7 +145,6 @@ class StateMethods:
         # children must contain arrays & pytrees
         children = (
             self.particles,
-            self.entropy,
             self.log_weights,
             self.weights,
             self.log_likelihoods,
@@ -164,15 +163,14 @@ class StateMethods:
         # Here we avoid `__init__` because it has extra logic we don't require:
         obj = object.__new__(cls)
         obj.particles = children[0]
-        obj.entropy = children[1]
-        obj.log_weights = children[2]
-        obj.weights = children[3]
-        obj.log_likelihoods = children[4]
-        obj.action = children[5]
-        obj.ancestor_indices = children[6]
-        obj.resampling_correction = children[7]
-        obj.t = children[8]
-        obj.ess = children[9]
+        obj.log_weights = children[1]
+        obj.weights = children[2]
+        obj.log_likelihoods = children[3]
+        obj.action = children[4]
+        obj.ancestor_indices = children[5]
+        obj.resampling_correction = children[6]
+        obj.t = children[7]
+        obj.ess = children[8]
         return obj
 
     def _sample_particle_idx(self):
@@ -184,7 +182,6 @@ class State(StateMethods):
     def __init__(
         self,
         particles,
-        entropy=None,
         log_weights=None,
         weights=None,
         log_likelihoods=None,
@@ -196,7 +193,6 @@ class State(StateMethods):
         **kwargs,
     ):
         self.particles = particles
-        self.entropy = entropy
         self.log_weights = log_weights
         self.weights = weights
         self.log_likelihoods = log_likelihoods
@@ -217,8 +213,6 @@ class State(StateMethods):
                 raise ValueError(f"Unknown keyword argument {kwarg}")
 
         # Set default values
-        if self.entropy is None:
-            self.entropy = ops.zeros(self.batch_size)
         if self.weights is None:
             self.weights = (
                 ops.ones((self.batch_size, self.n_particles)) / self.n_particles_float
@@ -259,7 +253,6 @@ class State(StateMethods):
 
 class StateTF(State, tf.experimental.ExtensionType):
     particles: tf.Tensor
-    entropy: tf.Tensor
     log_weights: tf.Tensor
     weights: tf.Tensor
     log_likelihoods: tf.Tensor
@@ -282,7 +275,6 @@ def index_default_to_none(value, index: int):
 class StateSeries(StateMethods):
     def __init__(self, state_array):
         self.particles = state_array.particles
-        self.entropy = state_array.entropy
         self.log_weights = state_array.log_weights
         self.weights = state_array.weights
         self.log_weights = state_array.log_weights
@@ -313,7 +305,6 @@ class StateSeries(StateMethods):
         """Read the state at the given time step."""
         return State(
             particles=index_default_to_none(self.particles, time),
-            entropy=index_default_to_none(self.entropy, time),
             log_weights=index_default_to_none(self.log_weights, time),
             weights=index_default_to_none(self.weights, time),
             log_likelihoods=index_default_to_none(self.log_likelihoods, time),
@@ -342,7 +333,6 @@ class StateSeries(StateMethods):
 
 class StateSeriesTF(StateSeries, tf.experimental.ExtensionType):
     particles: tf.Tensor
-    entropy: tf.Tensor
     log_weights: tf.Tensor
     weights: tf.Tensor
     log_likelihoods: tf.Tensor
@@ -354,7 +344,6 @@ class StateSeriesTF(StateSeries, tf.experimental.ExtensionType):
 
     def __init__(self, state_array):
         self.particles = state_array.particles.stack()
-        self.entropy = state_array.entropy.stack()
         self.log_weights = state_array.log_weights.stack()
         self.weights = state_array.weights.stack()
         self.log_weights = state_array.log_weights.stack()

@@ -103,7 +103,7 @@ class LearnedPF(BaseTrainer):
         predict_step_avg=5,
         dump_results=False,
         enable_compute_elbo=False,
-        enable_test_transition_model=True,
+        enable_test_transition_model=False,
         elbo_likelihood_sigma=0.1,
         store_proposal=False,
         skip_grad=None,
@@ -553,10 +553,6 @@ class LearnedPF(BaseTrainer):
         _, _, state_series = self.call(targets, training=False, seed=seed)
         return state_series
 
-    def reconstructor(self, states):
-        posterior_mean = self.posterior_sample(states, mode="wm")
-        return self.observation_model.reconstruct(posterior_mean)
-
     def test_step(self, data):
         """
         Args:
@@ -626,11 +622,6 @@ class LearnedPF(BaseTrainer):
             # Compute the L2 norm between the particles and the real positions
             l2norm_particles = self.particle_l2_error(one_particle, real_positions)
             results[f"l2norm_{mode}"] = ops.mean(l2norm_particles)
-
-            # Compute reconstruction metrics
-            reconstructions = self.observation_model.reconstruct(
-                one_particle, masks if masks_in_dataloader else None
-            )
 
         # Dump states and batch
         if self.dump_results and not self.is_training:

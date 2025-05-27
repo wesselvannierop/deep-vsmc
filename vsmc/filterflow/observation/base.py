@@ -7,24 +7,6 @@ from vsmc.filterflow.state import State
 
 
 class ObservationModelBase(Module, metaclass=abc.ABCMeta):
-    def reconstruct(self, sample, masks=None):
-        """
-        Args:
-            sample (Tensor): The sample tensor of shape [..., *state_dims]
-            masks (Tensor): The masks tensor - [..., *observation_dims]
-
-        Returns:
-            Tensor: The observation tensor of shape [..., *observation_dims]
-        """
-        # Add n_particles dim
-        sample = ops.expand_dims(sample, axis=-self.n_latent_dims - 1)
-
-        # Decode
-        images = self.to_observation_domain(sample, masks)
-
-        # Remove n_particles dim
-        return ops.squeeze(images, axis=0)
-
     @abc.abstractmethod
     def to_observation_domain(self, particles, masks=None):
         """Transforms the latent state into an observation"""

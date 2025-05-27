@@ -609,7 +609,7 @@ def plot_kde_prior(
 
 def get_kde_prior(use_cache=True):
     if not os.path.exists(f"{TEMP_DIR}/kde_jax.pkl") or not use_cache:
-        compute_kde_prior()
+        kde = compute_kde_prior()
     else:
         kde = pickle.load(open(f"{TEMP_DIR}/kde_jax.pkl", "rb"))
         # kde = jax.device_put(kde, jax.devices()[-1]) # TODO TEMP Move to last GPU

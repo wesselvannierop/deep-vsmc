@@ -212,7 +212,6 @@ class SMC(Filter):
         resampling_criterion: ResamplingCriterionBase,
         resampling_method: ResamplerBase,
         action_model: ActionModelBase = None,
-        compute_entropy=False,
         enhance_gradient_steps=1,
         prior: Distribution = None,
         **kwargs,
@@ -223,7 +222,6 @@ class SMC(Filter):
         self._observation_model = observation_model
         self._resampling_criterion = resampling_criterion
         self._resampling_method = resampling_method
-        self._compute_entropy = compute_entropy
         self._action_model = action_model
         self.enhance_gradient_steps = enhance_gradient_steps
         self.prior = prior
@@ -290,39 +288,6 @@ class SMC(Filter):
         )
         return new_state.evolve(resampling_correction=resampling_correction)
 
-    def entropy(
-        self,
-        transition_fn,
-        proposed_particles,
-        observation_log_likelihoods,
-        weights,
-        prev_log_weights,
-    ):
-        """
-        Source: https://ieeexplore.ieee.org/document/5712013
-        """
-        entropy = ops.logsumexp(observation_log_likelihoods + prev_log_weights, axis=1)
-
-        something = []
-        n_particles = proposed_particles.shape[1]
-        for j in range(n_particles):
-            particle = State(
-                ops.repeat(
-                    proposed_particles[:, j : j + 1],
-                    n_particles,
-                    axis=1,
-                )
-            )
-            something.append(transition_fn(particle) + prev_log_weights[:, j])
-        something = ops.stack(something, axis=-1)
-        something = ops.logsumexp(something, axis=-1)
-
-        entropy -= ops.sum(
-            (observation_log_likelihoods + something) * weights,
-            axis=1,
-        )
-        return entropy
-
     def propose_and_weight(
         self, state: State, observation, inputs, proposal_dists=None, seed=None
     ):
@@ -385,27 +350,11 @@ class SMC(Filter):
         normalized_log_weights = normalize(log_weights, 1, state.n_particles, True)
         weights = ops.exp(normalized_log_weights)
 
-        # Optionally compute entropy
-        if self._compute_entropy:
-            transition_fn = lambda x: self._transition_model.loglikelihood(
-                state, x, inputs
-            )
-            entropy = self.entropy(
-                transition_fn,
-                proposed_state.particles,
-                observation_log_likelihoods,
-                weights,
-                state.log_weights,
-            )
-        else:
-            entropy = None
-
         return (
             proposed_state.evolve(
                 weights=weights,
                 log_weights=normalized_log_weights,
                 log_likelihoods=log_likelihoods,
-                entropy=entropy,
                 action=action,
             ),
             proposal_dists,
