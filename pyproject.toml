@@ -10,12 +10,16 @@ python = "^3.10"
 wandb = ">=0.16, ^0"
 SimpleITK = "^2.3"
 huggingface_hub = { version = ">=0.22, ^0", extras = ["cli"] }
-keras = "^3.4"
+
 # keras==3.6 produces a bug that will fail model.fit after one epoch in graph mode.
-zea = { version = "^0.0.1", python = ">=3.10,<3.13" }
+keras = "^3.4"
+
+# zea is pinned to 0.0.1 because it is being actively developed and the API may change.
+zea = { version = "==0.0.1", python = ">=3.10,<3.13" }
 tensorflow = { version = "^2.16", extras = ["and-cuda"] }
 "tensorflow-probability" = "^0"
 jax = { version = "^0.4", extras = ["cuda12"] }
+pandas = "^2.1"
 
 [build-system]
 requires = ["poetry-core"]

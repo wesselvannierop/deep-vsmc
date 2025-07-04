@@ -1,3 +1,8 @@
+"""
+First run `python icassp/noise_tracking_performance.py` to generate the results,
+then run this script to plot the results.
+"""
+
 import os
 
 os.environ["KERAS_BACKEND"] = "numpy"
@@ -21,9 +26,9 @@ SAVE_DIR = Path(TEMP_DIR) / timestamp
 SAVE_DIR.mkdir()
 
 
-plt.style.use("pyutils/styles/icassp.mplstyle")
+plt.style.use("styles/icassp.mplstyle")
 if DARKMODE:
-    plt.style.use("pyutils/styles/darkmode.mplstyle")
+    plt.style.use("styles/darkmode.mplstyle")
 
 sweep_folder = Path(f"{RESULTS_DIR}/lorenz/icassp/tracking-performance")
 metric = "l2norm_wm"

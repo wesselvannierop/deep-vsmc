@@ -1,3 +1,8 @@
+"""
+First run `python icassp/partial_observations_tracking_performance.py` to generate the results,
+then run this script to plot the results.
+"""
+
 import os
 
 os.environ["KERAS_BACKEND"] = "numpy"
@@ -7,10 +12,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
-import vsmc.ops as dpf_ops
 from zea import Config, log
 from zea.utils import get_date_string
+
+import vsmc.ops as dpf_ops
 
 DARKMODE = True
 
@@ -21,9 +26,9 @@ SAVE_DIR = Path(TEMP_DIR) / timestamp
 SAVE_DIR.mkdir()
 
 
-plt.style.use("pyutils/styles/icassp.mplstyle")
+plt.style.use("styles/icassp.mplstyle")
 if DARKMODE:
-    plt.style.use("pyutils/styles/darkmode.mplstyle")
+    plt.style.use("styles/darkmode.mplstyle")
 
 sweep_folder = Path(
     f"{RESULTS_DIR}/lorenz/icassp/partial-observations-tracking-performance"
@@ -116,7 +121,7 @@ elif metric == "kl":
     plt.ylim([0, 15])
 
 # Save
-save_path = SAVE_DIR / f"aggregate_results_partial_observations_{metric}.png"
+save_path = SAVE_DIR / f"tracking_error_partial_observations_{metric}.png"
 plt.savefig(save_path.with_suffix(".png"), transparent=True)
 plt.savefig(save_path.with_suffix(".pdf"))
 plt.close()

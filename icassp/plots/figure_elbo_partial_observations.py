@@ -1,3 +1,8 @@
+"""
+First run `python icassp/partial_observations_tracking_performance.py` to generate the results,
+then run this script to plot the results.
+"""
+
 import os
 
 os.environ["KERAS_BACKEND"] = "numpy"
@@ -33,9 +38,9 @@ else:
     }
 
 
-plt.style.use("pyutils/styles/icassp.mplstyle")
+plt.style.use("styles/icassp.mplstyle")
 if DARKMODE:
-    plt.style.use("pyutils/styles/darkmode.mplstyle")
+    plt.style.use("styles/darkmode.mplstyle")
 
 sweep_folder = Path(
     f"{RESULTS_DIR}/lorenz/icassp/partial-observations-tracking-performance"
@@ -184,7 +189,7 @@ axs[1].set_ylim([640, 690])
 #     plt.ylim([0, 15])
 
 # Save
-save_path = SAVE_DIR / "aggregate_results_partial_observations_kl_ll.png"
+save_path = SAVE_DIR / "elbo_partial_observations.png"
 plt.savefig(save_path.with_suffix(".png"), transparent=True)
 plt.savefig(save_path.with_suffix(".pdf"))
 plt.close()
