@@ -6,11 +6,11 @@ from vsmc.filterflow.state import State
 
 class TransitionModelBase(Module, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def transition_dist(self, particles):
+    def transition_dist(self, state: State):
         """Get the transition distribution for the particles given the previous state and inputs.
 
         Args:
-            particles (Tensor): Previous particle filter state.
+            state (State): Previous particle filter state.
 
         Returns:
             tfp.Distribution: The transition distribution.

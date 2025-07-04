@@ -49,7 +49,7 @@ if __name__ == "__main__":
         sweeper = Sweeper(
             base_config,
             {
-                "data.awgn_std": np.arange(0.1, 0.65, 0.05),
+                "data.awgn_std": np.arange(0.1, 0.15, 0.05),
             },
             experiment_path,
             sweep_name,

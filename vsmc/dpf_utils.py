@@ -212,8 +212,9 @@ class GaussianTransitionModel(TransitionModelBase):
             "evolution_model": self.evolution_model_name,
         }
 
-    def transition_dist(self, particles):
+    def transition_dist(self, state):
         # Apply evolution model (could be identity)
+        particles = state.particles
         particles = self.evolution_model(particles)
 
         return GaussianMixture(
@@ -221,12 +222,12 @@ class GaussianTransitionModel(TransitionModelBase):
         )
 
     def loglikelihood(self, prior_state, proposed_state, inputs):
-        dist = self.transition_dist(prior_state.particles)
+        dist = self.transition_dist(prior_state)
         return dist.log_prob(proposed_state.particles)
 
     def sample(self, state, inputs, seed=None):
         # Sample from transition model
-        dist = self.transition_dist(state.particles)
+        dist = self.transition_dist(state)
         proposed_particles = dist.sample(seed=seed)
 
         if self.clip_range is not None:

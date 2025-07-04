@@ -7,9 +7,9 @@ import warnings
 
 import tensorflow as tf
 from keras import ops
+from zea import tensor_ops
 
 import vsmc.tfp_wrapper as tfp
-from zea import tensor_ops
 from vsmc.data.lorenz_data import LorenzPSF
 from vsmc.dpf_utils import get_evolution_model, trim_velocity
 from vsmc.experiments import setup_experiment
@@ -60,7 +60,7 @@ class ProposalModelEKF(ProposalModelBase):
         self.transition_fn = transition_fn
         self.transition_jacobian_fn_batch = transition_jacobian_fn_batch
 
-    def _get_dist(self, state, observation):
+    def proposal_dist(self, state, observation):
         particles = state.particles
         particles_cov = state.particles_cov
 
@@ -92,7 +92,7 @@ class ProposalModelEKF(ProposalModelBase):
         return tfd.MultivariateNormalFullCovariance(filtered_means, filtered_covs)
 
     def propose(self, state: State, inputs, observation, seed=None):
-        dist = self._get_dist(state, observation)
+        dist = self.proposal_dist(state, observation)
         if self.sample_mean:
             proposed_particles = dist.mean()
         else:
@@ -101,7 +101,7 @@ class ProposalModelEKF(ProposalModelBase):
         return state.evolve(particles=proposed_particles, particles_cov=particles_cov)
 
     def loglikelihood(self, proposed_state: State, state: State, inputs, observation):
-        dist = self._get_dist(state, observation)
+        dist = self.proposal_dist(state, observation)
         log_prob = dist.log_prob(proposed_state.particles)
         return log_prob
 
@@ -120,7 +120,7 @@ class TransitionModelEKF(TransitionModelBase):
         self.transition_fn = transition_fn
         self.transition_jacobian_fn_batch = transition_jacobian_fn_batch
 
-    def _get_dist(self, prior_state):
+    def transition_dist(self, prior_state):
         # taken from tfp -> extended_kalman_filter_one_step
         current_state = prior_state.particles
         current_covariance = prior_state.particles_cov
@@ -151,11 +151,11 @@ class TransitionModelEKF(TransitionModelBase):
         return dist
 
     def loglikelihood(self, prior_state, proposed_state, inputs):
-        dist = self._get_dist(prior_state)
+        dist = self.transition_dist(prior_state)
         return dist.log_prob(proposed_state.particles)
 
     def sample(self, state, inputs, seed=None):
-        dist = self._get_dist(state)
+        dist = self.transition_dist(state)
         if self.sample_mean:
             proposed_particles = dist.mean()
         else:

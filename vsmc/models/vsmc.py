@@ -190,10 +190,11 @@ class ProposalModel(layers.Layer, ProposalModelBase):
         # self.nn.build((None, None, self.state_dims + self.encoded_dim))
         return self.encoder, self.nn
 
-    def proposal_dist(self, particles, observation):
-        return self(particles, observation)
+    def proposal_dist(self, state, observation):
+        return self(state, observation)
 
-    def call(self, particles, observation):
+    def call(self, state, observation):
+        particles = state.particles
         batch_size, n_particles, _ = ops.shape(particles)
 
         encoded_observation = self.encoder(observation)

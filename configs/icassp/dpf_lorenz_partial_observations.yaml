@@ -16,7 +16,6 @@ dpf:
   n_particles: 28
   enable_compute_elbo: True
   dump_results: False
-  visualize_idx: null
 
 model: learned
 experiment: lorenz

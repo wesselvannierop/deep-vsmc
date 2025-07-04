@@ -317,9 +317,7 @@ class SMC(Filter):
             action = None
 
         for i in range(self.enhance_gradient_steps):
-            proposal_dist = self._proposal_model.proposal_dist(
-                state.particles, observation
-            )
+            proposal_dist = self._proposal_model.proposal_dist(state, observation)
             if self.store_proposal and proposal_dists is not None:
                 proposal_dists.append(proposal_dist)
             proposed_state = self._proposal_model.propose(

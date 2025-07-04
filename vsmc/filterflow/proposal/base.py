@@ -6,11 +6,11 @@ from vsmc.filterflow.state import State
 
 class ProposalModelBase(Module, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def proposal_dist(self, particles, observation):
+    def proposal_dist(self, state: State, observation):
         """Get the proposal distribution for the particles given the observation.
 
         Args:
-            particles (Tensor)
+            state (State): Previous particle filter state.
             observation (Tensor): Look ahead observation for adapted particle proposal
 
         Returns:

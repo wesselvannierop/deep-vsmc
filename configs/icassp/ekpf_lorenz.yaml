@@ -16,7 +16,6 @@ dpf:
   n_particles: 1
   enable_compute_elbo: True
   dump_results: False
-  visualize_idx: null
   initial_state: ["true", 1.0] # mu, sigma
 
 transition:
@@ -24,8 +23,7 @@ transition:
   sigma: 0.5
 evolution_model: velocity
 
-proposal_model:
-  sample_mean: True
+sample_mean: True
 
 model: ekpf # bootstrap, learned, ekpf
 experiment: lorenz

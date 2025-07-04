@@ -12,7 +12,6 @@ sample_dt: 0.02
 dpf:
   initial_state: [0.0, 35.0] # mu, sigma
   n_particles: 1
-  visualize_idx: null
   enable_compute_elbo: False
   dump_results: False
   enable_test_transition_model: False

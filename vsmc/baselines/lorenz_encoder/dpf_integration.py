@@ -16,7 +16,7 @@ class EncoderProposalModel(ProposalModelBase):
     def __init__(self, model):
         self.model = model
 
-    def proposal_dist(self, particles, observation):
+    def proposal_dist(self, state, observation):
         return self.model(observation)  # just return the proposed particles
 
     def loglikelihood(self, proposal_dist, proposed_state, inputs):

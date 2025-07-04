@@ -9,8 +9,8 @@ class BootstrapProposalModel(ProposalModelBase):
         super(BootstrapProposalModel, self).__init__()
         self._transition_model = transition_model
 
-    def proposal_dist(self, particles, observation):
-        return self._transition_model.transition_dist(particles)
+    def proposal_dist(self, state, observation):
+        return self._transition_model.transition_dist(state)
 
     def propose(self, proposal_dist, state: State, inputs, seed=None):
         """See base class"""
