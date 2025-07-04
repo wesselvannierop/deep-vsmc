@@ -33,7 +33,7 @@ from pathlib import Path
 
 import numpy as np
 
-from usbmd import Config
+from zea import Config
 from vsmc.experiments import setup_experiment
 from vsmc.learned_pf import dpf_run
 from vsmc.sweeper import Sweeper

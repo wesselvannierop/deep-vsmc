@@ -8,15 +8,13 @@ import warnings
 from pathlib import Path
 
 import keras
-import numpy as np
-import tensorflow as tf
 from keras import ops
-from tqdm import tqdm
+from zea import tensor_ops
+from zea.display import to_8bit
+from zea.utils import save_to_gif
 
 import vsmc.filterflow as filterflow
 import vsmc.tfp_wrapper as tfp
-from usbmd import tensor_ops
-from usbmd.utils import save_to_gif, to_8bit
 from vsmc.data.lorenz_data import Lorenz, LorenzPSF, get_lorenz_kwargs
 from vsmc.data.utils import backwards_compatibility
 from vsmc.dpf_utils import Masker

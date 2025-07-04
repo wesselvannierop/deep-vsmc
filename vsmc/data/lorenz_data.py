@@ -13,8 +13,8 @@ from keras import ops
 from scipy.integrate import odeint
 
 import vsmc.tfp_wrapper as tfp
-from usbmd import log, tensor_ops
-from usbmd.utils import translate
+from zea import log, tensor_ops
+from zea.utils import translate
 from vsmc.data.utils import backwards_compatibility
 
 tfd = tfp.distributions

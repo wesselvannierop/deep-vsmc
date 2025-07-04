@@ -3,7 +3,7 @@ from pathlib import Path
 import keras
 from keras import ops
 
-from usbmd import log
+from zea import log
 
 
 def update_instance_with_attributes(

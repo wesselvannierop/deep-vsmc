@@ -15,7 +15,7 @@ from keras import ops
 # import because can be nice to have
 from keras.src.optimizers.base_optimizer import clip_by_global_norm, global_norm
 
-from usbmd.utils import translate
+from zea.utils import translate
 
 backend = keras.backend.backend()
 

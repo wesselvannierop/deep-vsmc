@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
-from usbmd import Config, log
+from zea import Config, log
 
 DECIMAL_PRECISION = 10  # max 15?
 decimal.getcontext().prec = DECIMAL_PRECISION

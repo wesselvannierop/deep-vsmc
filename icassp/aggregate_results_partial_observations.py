@@ -9,8 +9,8 @@ import numpy as np
 import pandas as pd
 
 import vsmc.ops as dpf_ops
-from usbmd import Config, log
-from usbmd.utils import get_date_string
+from zea import Config, log
+from zea.utils import get_date_string
 
 DARKMODE = True
 

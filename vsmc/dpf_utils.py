@@ -11,7 +11,7 @@ import wandb
 from keras import ops
 
 import vsmc.ops as dpf_ops
-from usbmd import log, tensor_ops
+from zea import log, tensor_ops
 from vsmc.filterflow.transition import TransitionModelBase
 from vsmc.prob import GaussianMixture
 

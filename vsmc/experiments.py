@@ -6,8 +6,8 @@ from pathlib import Path
 import keras
 import wandb
 
-from usbmd import Config, log
-from usbmd.utils import get_date_string
+from zea import Config, log
+from zea.utils import get_date_string
 
 debugging = True if sys.gettrace() else False
 print("Debugging mode is on!" if debugging else "Debugging mode is off!")

@@ -1,7 +1,5 @@
 import abc
 
-from keras import ops
-
 from vsmc.filterflow.base import Module
 from vsmc.filterflow.state import State
 

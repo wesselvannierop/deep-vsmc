@@ -19,7 +19,7 @@ def runnable(
 
     # Set CUDA_VISIBLE_DEVICES
     if os.environ.get("CUDA_VISIBLE_DEVICES") is None:
-        from usbmd.device import get_device
+        from zea.internal.device import get_device
 
         get_device(device)
 

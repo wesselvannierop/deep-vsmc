@@ -5,7 +5,7 @@ from pathlib import Path
 
 import keras
 
-from usbmd import log
+from zea import log
 
 
 def is_module(obj):

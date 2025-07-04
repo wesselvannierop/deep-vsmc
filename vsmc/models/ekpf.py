@@ -9,7 +9,7 @@ import tensorflow as tf
 from keras import ops
 
 import vsmc.tfp_wrapper as tfp
-from usbmd import tensor_ops
+from zea import tensor_ops
 from vsmc.data.lorenz_data import LorenzPSF
 from vsmc.dpf_utils import get_evolution_model, trim_velocity
 from vsmc.experiments import setup_experiment

@@ -7,9 +7,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
-from usbmd import Config, log
-from usbmd.utils import get_date_string
+from zea import Config, log
+from zea.utils import get_date_string
 
 DARKMODE = True
 

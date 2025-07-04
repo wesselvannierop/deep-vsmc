@@ -2,25 +2,16 @@ import warnings
 from math import prod
 
 import keras
-import numpy as np
 from keras import Sequential, layers, ops
 
 import vsmc.ops as dpf_ops
 import vsmc.tf_prob  # pylint: disable=unused-import
 import vsmc.tfp_wrapper as tfp
-from usbmd import tensor_ops
-from vsmc.data.lorenz_data import LorenzPSF
-from vsmc.dpf_utils import (
-    GaussianTransitionModel,
-    get_input_size,
-    trim_velocity,
-    velocity_transition_fn,
-)
-from vsmc.filterflow.action import ActionModelBase
+from vsmc.dpf_utils import (GaussianTransitionModel, get_input_size,
+                            trim_velocity, velocity_transition_fn)
 from vsmc.filterflow.proposal import ProposalModelBase
 from vsmc.filterflow.state import State
 from vsmc.filterflow.transition import TransitionModelBase
-from vsmc.models import get_image_encoder_model, get_proposal_model
 from vsmc.models.helpers import build_image_encoder, build_simple_dense
 from vsmc.prob import GaussianMixture
 

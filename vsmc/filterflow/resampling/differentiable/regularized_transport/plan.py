@@ -4,13 +4,10 @@ TODO: implement this module and dependencies in jax (only needed for training th
 
 import tensorflow as tf
 
-from vsmc.filterflow.resampling.differentiable.regularized_transport.sinkhorn import (
-    sinkhorn_potentials,
-)
+from vsmc.filterflow.resampling.differentiable.regularized_transport.sinkhorn import \
+    sinkhorn_potentials
 from vsmc.filterflow.resampling.differentiable.regularized_transport.utils import (
-    cost,
-    diameter,
-)
+    cost, diameter)
 
 
 @tf.function
@@ -29,7 +26,7 @@ def transport_from_potentials(x, f, g, eps, logw, n):
     :param g: tf.Tensor[B, N]
         Potential, output of the sinkhorn iterates
     :param eps: float
-    :param logw: torch.Tensor[N]
+    :param logw: tf.Tensor[N]
     :
     :return: the transportation matrix
     :rtype: tf.Tensor[B, N, N]

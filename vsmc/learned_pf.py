@@ -12,7 +12,7 @@ from keras import ops
 
 import vsmc.ops as dpf_ops
 import vsmc.tfp_wrapper as tfp
-from usbmd import log, tensor_ops
+from zea import log, tensor_ops
 from vsmc.data.lorenz_data import lorenz_kde_prior
 from vsmc.experiments import debugging
 from vsmc.filterflow import SMC

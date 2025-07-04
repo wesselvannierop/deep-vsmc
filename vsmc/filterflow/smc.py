@@ -14,7 +14,7 @@ import keras
 from keras import ops
 
 import vsmc.tfp_wrapper as tfp
-from usbmd.backend import jit
+from zea.backend import jit
 from vsmc.prob import Distribution
 
 from .action.base import ActionModelBase

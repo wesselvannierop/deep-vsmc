@@ -17,7 +17,7 @@ import tensorflow as tf
 from jax.tree_util import register_pytree_node
 from keras import ops
 
-from usbmd.tensor_ops import extend_n_dims
+from zea.tensor_ops import extend_n_dims
 
 
 class StateMethods:

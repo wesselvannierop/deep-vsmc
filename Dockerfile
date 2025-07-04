@@ -15,8 +15,5 @@ ENV PIP_CACHE_DIR=/tmp/pip_cache \
 WORKDIR /vsmc
 COPY pyproject.toml poetry.lock ./
 
-# Install dependencies
-RUN --mount=type=cache,target=$POETRY_CACHE_DIR --mount=type=ssh \
-    poetry install --with torch,tensorflow,jax
-
-ENV PYTHONPATH="${PYTHONPATH}:/vsmc"
+# Install dependencies and vsmc
+RUN --mount=type=cache,target=$POETRY_CACHE_DIR poetry install

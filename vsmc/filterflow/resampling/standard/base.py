@@ -2,7 +2,7 @@ import abc
 
 from keras import ops
 
-from usbmd.tensor_ops import extend_n_dims
+from zea.tensor_ops import extend_n_dims
 from vsmc.filterflow.resampling.base import ResamplerBase, resample
 from vsmc.filterflow.state import State
 from vsmc.ops import cumulative_logsumexp, searchsorted
