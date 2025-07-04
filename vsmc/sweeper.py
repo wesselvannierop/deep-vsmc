@@ -3,7 +3,6 @@ import itertools
 from pathlib import Path
 
 import numpy as np
-
 from zea import Config, log
 
 DECIMAL_PRECISION = 10  # max 15?
@@ -71,9 +70,9 @@ class Sweeper:
         keys = list(self.sweep_param_dict.keys())
         values = list(self.sweep_param_dict.values())
         for value in values:
-            assert isinstance(
-                value, (list, tuple)
-            ), "Values in the sweep dict must be a list or tuple"
+            assert isinstance(value, (list, tuple)), (
+                "Values in the sweep dict must be a list or tuple"
+            )
 
         # Generate combinations
         combinations = list(itertools.product(*values))
@@ -97,7 +96,7 @@ class Sweeper:
         # Loop over all combinations
         for i, combination in enumerate(self.combinations):
             # Create a deep copy of the base config
-            config = self.base_config.deep_copy()
+            config = self.base_config.copy()
             # Loop over all parameters in the combination and update the config
             for param_name, param_value in combination.items():
                 _param_name = param_name.split(".")

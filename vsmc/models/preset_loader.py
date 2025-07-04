@@ -49,9 +49,9 @@ def from_preset(identifier: str, verbose=True) -> Path:
     # Check if identifier is a preset
     if isinstance(identifier, str) and identifier.startswith("preset:"):
         identifier = identifier[7:]  # Remove "preset:" prefix
-        assert (
-            identifier in flat_names
-        ), f"Identifier: {identifier} is not a valid preset"
+        assert identifier in flat_names, (
+            f"Identifier: {identifier} is not a valid preset"
+        )
         checkpoint = _from_preset(identifier, verbose)
 
     # If not a preset, check if it is a path

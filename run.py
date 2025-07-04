@@ -39,7 +39,6 @@ from vsmc.experiments import debugging, setup_experiment
 from vsmc.learned_pf import dpf_run
 
 if __name__ == "__main__":
-
     config, run = setup_experiment(args.config, debug_run=args.debug_run)
 
     pf = dpf_run(config)

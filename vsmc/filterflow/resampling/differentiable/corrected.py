@@ -38,7 +38,7 @@ class CorrectedRegularizedTransform(ResamplerBase, metaclass=abc.ABCMeta):
         convergence_threshold=1e-3,
         ricatti_solver=None,
         propagate_correction_gradient=True,
-        **_kwargs
+        **_kwargs,
     ):
         """Constructor
 

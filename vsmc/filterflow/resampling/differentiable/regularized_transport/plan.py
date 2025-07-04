@@ -4,10 +4,13 @@ TODO: implement this module and dependencies in jax (only needed for training th
 
 import tensorflow as tf
 
-from vsmc.filterflow.resampling.differentiable.regularized_transport.sinkhorn import \
-    sinkhorn_potentials
+from vsmc.filterflow.resampling.differentiable.regularized_transport.sinkhorn import (
+    sinkhorn_potentials,
+)
 from vsmc.filterflow.resampling.differentiable.regularized_transport.utils import (
-    cost, diameter)
+    cost,
+    diameter,
+)
 
 
 @tf.function

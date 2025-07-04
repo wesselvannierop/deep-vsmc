@@ -21,7 +21,6 @@ SAVE_DIR = Path(TEMP_DIR) / timestamp
 SAVE_DIR.mkdir()
 
 
-
 plt.style.use("pyutils/styles/icassp.mplstyle")
 if DARKMODE:
     plt.style.use("pyutils/styles/darkmode.mplstyle")
@@ -96,4 +95,4 @@ plt.savefig(SAVE_DIR / "tracking_performance.png", transparent=True)
 plt.savefig(SAVE_DIR / "tracking_performance.pdf")
 plt.close()
 
-log.info(f"Saved to {log.green(SAVE_DIR / "tracking_performance.png")}")
+log.info(f"Saved to {log.green(SAVE_DIR / 'tracking_performance.png')}")

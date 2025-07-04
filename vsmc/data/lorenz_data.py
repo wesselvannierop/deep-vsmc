@@ -397,9 +397,9 @@ class LorenzPSF:
 
     def __call__(self, coordinate, eps=1e-6):
         # coordinate.shape [float32]: (*batch_dims, 3)
-        assert (
-            coordinate.shape[-1] == 3
-        ), f"Last dimension of coordinate must be 3, got {coordinate.shape[-1]}"
+        assert coordinate.shape[-1] == 3, (
+            f"Last dimension of coordinate must be 3, got {coordinate.shape[-1]}"
+        )
 
         coordinate = coordinate[..., None, None] * ops.ones(
             self.grid[0].shape, "float32"

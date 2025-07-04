@@ -34,9 +34,7 @@ if __name__ == "__main__":
     args = parse_args()
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
-    experiment_path = Path(
-        f"{args.output_dir}/dpf/lorenz/icassp/tracking-performance"
-    )
+    experiment_path = Path(f"{args.output_dir}/dpf/lorenz/icassp/tracking-performance")
     config_paths = {
         "dpf": "configs/icassp/dpf_lorenz.yaml",
         "bpf10x": "configs/icassp/bootstrap_lorenz_10x.yaml",

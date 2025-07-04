@@ -42,7 +42,7 @@ if __name__ == "__main__":
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
     experiment_path = Path(
-        f"results/lorenz/icassp/partial-observations-tracking-performance-250103"
+        f"results/lorenz/icassp/partial-observations-tracking-performance"
     )
     config_paths = {
         "dpf": "configs/icassp/dpf_lorenz_partial_observations.yaml",

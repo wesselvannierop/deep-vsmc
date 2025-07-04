@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import wandb
 from keras import ops
+from zea import log, tensor_ops
 
 import vsmc.ops as dpf_ops
-from zea import log, tensor_ops
 from vsmc.filterflow.transition import TransitionModelBase
 from vsmc.prob import GaussianMixture
 
@@ -156,27 +156,6 @@ def _mask_image(images, masks):
     return images * ops.cast(masks, images.dtype)
 
 
-def visualize_actions(masks, observations, save_path):
-    # Mask the observations
-    masked_observations = _mask_image(observations, masks)
-
-    fig, axs = plt.subplots(nrows=2, ncols=1, figsize=(10, 10), layout="constrained")
-    obs_img = axs[0].imshow(observations[0])
-    axs[0].set_title("Observation")
-    masked_img = axs[1].imshow(masked_observations[0])
-    axs[1].set_title("Masked observation")
-
-    def update_plot(frame):
-        obs_img.set_data(observations[frame])
-        masked_img.set_data(masked_observations[frame])
-        return obs_img, masked_img
-
-    ani = animation.FuncAnimation(
-        fig, update_plot, frames=range(len(observations)), repeat=True, blit=True
-    )
-    ani.save(f"{save_path}/actions.gif", fps=20, writer="ffmpeg")
-
-
 def visualize_trajectory(
     real_positions,
     ml_particles,
@@ -258,9 +237,9 @@ class GaussianTransitionModel(TransitionModelBase):
 def get_input_size(config):
     input_size = config.data.get("input_size")
     if input_size is None:
-        assert hasattr(
-            config.data, "image_shape"
-        ), "config needs data.input_size or data.image_shape"
+        assert hasattr(config.data, "image_shape"), (
+            "config needs data.input_size or data.image_shape"
+        )
         input_size = config.data.image_shape[:2]
     return input_size
 

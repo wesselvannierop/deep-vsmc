@@ -5,8 +5,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 import keras
 
+from vsmc.baselines.lorenz_encoder.train_encoder import Dataset, l2_loss
 from vsmc.experiments import setup_experiment
-from vsmc.baselines.lorenz_encoder.train_encoder import Dataset, debug, l2_loss
 from vsmc.models.preset_loader import from_preset
 
 if __name__ == "__main__":
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     model = keras.models.load_model(from_preset(config.checkpoint), compile=False)
 
     # Fit
-    model.compile(optimizer="adam", loss=l2_loss, **debug)
+    model.compile(optimizer="adam", loss=l2_loss)
     output = model.evaluate(
         dataset, callbacks=[keras.callbacks.CSVLogger(config.save_path / "val.csv")]
     )

@@ -36,11 +36,13 @@ class Experiment:
         backend: str | None = None,
         seed: int = 21,
         debug_run=False,
+        run_eagerly: bool = False,
     ):
         self.path = path
         self.backend = backend
         self.seed = seed
         self.debug_run = debug_run or debugging
+        self.run_eagerly = run_eagerly
 
         # Load config
         if isinstance(config, (str, Path)):
@@ -57,9 +59,9 @@ class Experiment:
         self.config = config
 
         if self.path is None:
-            assert (
-                "save_path" in self.config
-            ), "path not given and save_path not found in config."
+            assert "save_path" in self.config, (
+                "path not given and save_path not found in config."
+            )
             self.path = self.config.save_path
 
         # Add data key if not present
@@ -94,10 +96,6 @@ class Experiment:
         # Freeze such that no new attributes can be added
         self.config.freeze()
 
-    @property
-    def run_eagerly(self):
-        return self.debug_run
-
     def setup_wandb(self, **kwargs):
         mode = kwargs.pop("mode", "online")
         mode = "offline" if (self.debug_run and mode == "online") else mode
@@ -107,7 +105,7 @@ class Experiment:
 
     def format_path(self, path, config: Config):
         # Use config & timestamp to format the path
-        format_kwargs = Config(dict_bool_to_key(**config.deep_copy()))
+        format_kwargs = Config(dict_bool_to_key(**config.copy()))
         timestamp = get_date_string()
         format_kwargs.timestamp = timestamp
         path = Path(path.format(**format_kwargs))

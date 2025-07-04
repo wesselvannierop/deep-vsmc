@@ -81,7 +81,6 @@ class NeffCriterion(ResamplingCriterionBase):
 
 
 class AlwaysResample(ResamplingCriterionBase):
-
     def apply(self, state: State):
         return ops.ones(state.batch_size, "bool"), ops.zeros(
             state.batch_size, "float32"
@@ -89,7 +88,6 @@ class AlwaysResample(ResamplingCriterionBase):
 
 
 class NeverResample(ResamplingCriterionBase):
-
     def apply(self, state: State):
         return ops.zeros(state.batch_size, "bool"), ops.zeros(
             state.batch_size, dtype="float32"

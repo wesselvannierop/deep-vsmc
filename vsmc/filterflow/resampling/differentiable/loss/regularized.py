@@ -23,7 +23,7 @@ class SinkhornLoss(Loss):
         max_iter=50,
         convergence_threshold=1e-4,
         name="SinkhornLoss",
-        **_kwargs
+        **_kwargs,
     ):
         """Constructor
 

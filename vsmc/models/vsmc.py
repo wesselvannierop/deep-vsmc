@@ -7,8 +7,12 @@ from keras import Sequential, layers, ops
 import vsmc.ops as dpf_ops
 import vsmc.tf_prob  # pylint: disable=unused-import
 import vsmc.tfp_wrapper as tfp
-from vsmc.dpf_utils import (GaussianTransitionModel, get_input_size,
-                            trim_velocity, velocity_transition_fn)
+from vsmc.dpf_utils import (
+    GaussianTransitionModel,
+    get_input_size,
+    trim_velocity,
+    velocity_transition_fn,
+)
 from vsmc.filterflow.proposal import ProposalModelBase
 from vsmc.filterflow.state import State
 from vsmc.filterflow.transition import TransitionModelBase
@@ -36,9 +40,9 @@ def gaussian_from_nn(
 ):
     # Assertions
     if mixture == 1:
-        assert (
-            equally_weighted_mixture
-        ), "GMM with 1 component is obviously equally weighted."
+        assert equally_weighted_mixture, (
+            "GMM with 1 component is obviously equally weighted."
+        )
 
     state_dim = state_dims[axis]
     n_state_dims = len(state_dims)
@@ -111,9 +115,9 @@ class ProposalModel(layers.Layer, ProposalModelBase):
         self.proposal_hidden_dim = proposal_hidden_dim
         self.nfeatbase = nfeatbase
 
-        assert isinstance(
-            self.state_dims, int
-        ), "state_dims must be an integer for ProposalModel"
+        assert isinstance(self.state_dims, int), (
+            "state_dims must be an integer for ProposalModel"
+        )
 
         self.output_dim = 2 * state_dims * mixture
         if not equally_weighted_mixture:
@@ -133,6 +137,8 @@ class ProposalModel(layers.Layer, ProposalModelBase):
         if "prior" in config:
             assert config["prior"] is None, "Legacy checkpoint..."
             del config["prior"]
+        if "rnn" in config:
+            del config["rnn"]
         config["verbose"] = False
         return cls(**config)
 
@@ -244,9 +250,9 @@ class TransitionModel(layers.Layer, TransitionModelBase):
         self.equally_weighted_mixture = wrap_equally(equally_weighted_mixture, mixture)
         self.model_velocity = model_velocity
 
-        assert isinstance(
-            self.state_dims, int
-        ), "state_dims must be an integer for TransitionModel"
+        assert isinstance(self.state_dims, int), (
+            "state_dims must be an integer for TransitionModel"
+        )
 
         self.init_networks()
         if verbose:

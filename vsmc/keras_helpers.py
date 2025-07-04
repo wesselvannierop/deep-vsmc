@@ -159,7 +159,7 @@ class CSVLoggerEval(keras.callbacks.Callback):
             if isinstance(k, str):
                 return k
             elif isinstance(k, collections.abc.Iterable) and not is_zero_dim_ndarray:
-                return f"\"[{', '.join(map(str, k))}]\""
+                return f'"[{", ".join(map(str, k))}]"'
             else:
                 return k
 
@@ -210,7 +210,7 @@ class EpochCounterCallback(keras.callbacks.Callback):
     def on_epoch_begin(self, epoch, logs=None):
         self.model.epoch = epoch
         self.model.step.assign(self.len_training_dataset * epoch)
-        print(f"Step at epoch={epoch+1} begin:", self.model.step)
+        print(f"Step at epoch={epoch + 1} begin:", self.model.step)
 
         # Recompile when discriminator is getting activated
         if self.recompile_now(epoch):

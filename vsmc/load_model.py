@@ -4,7 +4,6 @@ import zipfile
 from pathlib import Path
 
 import keras
-
 from zea import log
 
 
@@ -40,6 +39,8 @@ def model_from_json(path, custom_objects=None, **kwargs):
     # Load file
     with open(path, "r", encoding="utf-8") as file:
         content = file.read()
+
+    content = content.replace("dpf.", "vsmc.")  # rename dpf to vsmc
 
     # Load json
     json_data = json.loads(content)

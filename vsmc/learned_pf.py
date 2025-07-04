@@ -9,12 +9,12 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from keras import ops
+from zea import log, tensor_ops
 
 import vsmc.ops as dpf_ops
 import vsmc.tfp_wrapper as tfp
-from zea import log, tensor_ops
+from vsmc.data.lorenz import LorenzObservationModel
 from vsmc.data.lorenz_data import lorenz_kde_prior
-from vsmc.experiments import debugging
 from vsmc.filterflow import SMC
 from vsmc.filterflow.resampling import (
     NeffCriterion,
@@ -51,9 +51,9 @@ def check_config(config):
     elif config.model == "learned":
         assert config.training.checkpoint is not None, "Need a checkpoint to evaluate"
     if config.training.get("checkpoint") is not None and config.get("train"):
-        assert hasattr(
-            config, "epoch_checkpoint"
-        ), "Need epoch_checkpoint for checkpoint"
+        assert hasattr(config, "epoch_checkpoint"), (
+            "Need epoch_checkpoint for checkpoint"
+        )
 
     assert not "validation" in config, "Using old config -> refactor!"
 
@@ -107,7 +107,7 @@ class LearnedPF(BaseTrainer):
         elbo_likelihood_sigma=0.1,
         store_proposal=False,
         skip_grad=None,
-        normalization_range: tuple = [-1, 1],
+        normalization_range: tuple = [0, 1],
         **kwargs,
     ):
         # Add all attributes to the instance
@@ -567,11 +567,6 @@ class LearnedPF(BaseTrainer):
         batch_size = ops.shape(observations)[1]
         real_initial_position = real_positions[0]
         initial_state = self.get_initial_state(batch_size, real_initial_position)
-        masks_in_dataloader = masks is not None
-        if masks_in_dataloader:
-            warnings.warn(
-                "Using masks from dataloader. Not sure if this is still correct"
-            )
 
         # Run PF
         state, proposal_dists, states = self(
@@ -785,8 +780,8 @@ def make_init_dict(config):
 
     # Add the rest of the config
     if "save_path" in config:
-        init_dict["save_folder"] = config.save_path
-    init_dict["normalization_range"] = config.data.normalization_range
+        init_dict["save_folder"] = str(config.save_path)
+    init_dict["normalization_range"] = config.data.get("normalization_range", [0, 1])
     return init_dict
 
 
@@ -794,7 +789,7 @@ def dpf_prep(config, verbose=True):
     check_config(config)
     init_dict = make_init_dict(config)
 
-    if config.get("trainig", {}).get("checkpoint") is not None:
+    if config.get("training", {}).get("checkpoint") is not None:
         print(
             f"Loading model from checkpoint: {log.yellow(config.training.checkpoint)}. "
             "So the rest of the config is ignored."
@@ -802,7 +797,11 @@ def dpf_prep(config, verbose=True):
         checkpoint = from_preset(config.training.checkpoint)
 
         init_dict["observation_model"] = config.get("observation_model", {})
-        pf = load_model(checkpoint, **init_dict)
+        pf = load_model(
+            checkpoint,
+            **init_dict,
+            custom_objects={"LorenzObservationModel": LorenzObservationModel},
+        )
 
         # Maybe update optimizer params
         update_instance_with_attributes(
@@ -878,16 +877,14 @@ def build_and_compile(pf, config):
         warnings.warn(f"Unbuilt layers: {unbuilt_layers}")
 
     # Compile
-    run_eagerly = config.get("run_eagerly", False) or debugging
+    run_eagerly = config.get("run_eagerly", False)
     pf.compile(optimizer=optimizer, jit_compile=False, run_eagerly=run_eagerly)
     return pf
 
 
 def dpf_evaluate(pf, config, val_dataset, n_val_epochs=1, verbose="auto"):
-    run_eagerly = (
-        config.get("run_eagerly", False)
-        or debugging
-        or config.dpf.get("enable_compute_elbo", False)
+    run_eagerly = config.get("run_eagerly", False) or config.dpf.get(
+        "enable_compute_elbo", False
     )
     pf.compile(run_eagerly=run_eagerly, jit_compile=False)
     pf.is_training = False
@@ -918,7 +915,6 @@ def get_fit_callbacks(config, dataset, val_dataset, recompile_now_callable):
             save_freq="epoch",
         ),
         keras.callbacks.CSVLogger(config.save_path / "metrics.csv", append=False),
-        CSVLoggerEval(config.save_path / "metrics-val.csv", append=True),
         keras.callbacks.ReduceLROnPlateau(
             monitor="val_l2norm_wm",
             factor=0.1,
@@ -927,7 +923,7 @@ def get_fit_callbacks(config, dataset, val_dataset, recompile_now_callable):
             mode="min",
         ),
         MyWandbMetricsLogger(log_freq="batch"),
-        MyProgbarLogger(),
+        *get_val_callbacks(config, val_dataset),
     ]
     return callbacks
 
@@ -935,6 +931,7 @@ def get_fit_callbacks(config, dataset, val_dataset, recompile_now_callable):
 def get_val_callbacks(config, val_dataset):
     callbacks = [
         CSVLoggerEval(config.save_path / "metrics-val.csv", append=True),
+        MyProgbarLogger(),
     ]
     return callbacks
 

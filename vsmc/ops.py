@@ -63,9 +63,9 @@ def split_into_sizes(array, sizes: list, axis: int = 0):
     other functionality compared to `ops.split`.
     """
     assert isinstance(sizes, list), "Sizes must be a list."
-    assert (
-        sum(sizes) == ops.shape(array)[axis]
-    ), "Sizes must sum to the length of the array."
+    assert sum(sizes) == ops.shape(array)[axis], (
+        "Sizes must sum to the length of the array."
+    )
 
     # Calculate split indices
     indices = np.cumsum(sizes[:-1])

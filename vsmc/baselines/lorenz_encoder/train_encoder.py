@@ -2,22 +2,14 @@ from vsmc.runnable import runnable
 
 runnable("jax", "auto:1", hide_first_for_tf=False)
 
-import sys
-
-debugging = True if sys.gettrace() else False
-if debugging:
-    debug = dict(jit_compile=False, run_eagerly=True)
-else:
-    debug = dict()
-
 import jax
 import keras
 from keras import ops
 from wandb.integration.keras import WandbMetricsLogger
 
-from vsmc.experiments import setup_experiment
 from vsmc.data.lorenz_data import LorenzPSF, lorenz_kde_prior
 from vsmc.dpf_utils import Masker
+from vsmc.experiments import setup_experiment
 from vsmc.models.vsmc import build_image_encoder
 
 
@@ -129,7 +121,7 @@ if __name__ == "__main__":
 
     # Fit
     optimizer = keras.optimizers.AdamW(learning_rate=1e-4)
-    model.compile(optimizer=optimizer, loss=l2_loss, **debug)
+    model.compile(optimizer=optimizer, loss=l2_loss)
     model.fit(
         dataset,
         epochs=200,
