@@ -35,7 +35,7 @@ import vsmc.runnable  # isort: skip
 args = parse_args()
 vsmc.runnable.runnable(args.backend, args.device)
 
-from vsmc.experiments import debugging, setup_experiment
+from vsmc.experiments import setup_experiment
 from vsmc.learned_pf import dpf_run
 
 if __name__ == "__main__":

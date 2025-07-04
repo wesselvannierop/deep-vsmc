@@ -888,7 +888,8 @@ def dpf_evaluate(pf, config, val_dataset, n_val_epochs=20, verbose="auto"):
     )
     pf.compile(run_eagerly=run_eagerly, jit_compile=False)
     pf.is_training = False
-    for _ in range(n_val_epochs):
+    for i in range(n_val_epochs):
+        print(f"Running evaluation ({i + 1}/{n_val_epochs}), this may take a while...")
         pf.evaluate(
             val_dataset,
             verbose=verbose,

@@ -29,6 +29,9 @@ docker build -t vsmc:latest .
 python run.py
 ```
 
+To generate the results from the [ICASSP 2025](https://doi.org/10.1109/ICASSP49660.2025.10889044)
+paper, see the `icassp` folder for the scripts to run.
+
 ## Credits
 
 A large part of this codebase is based on [filterflow](https://github.com/JTT94/filterflow).

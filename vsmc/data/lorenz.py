@@ -9,7 +9,7 @@ from pathlib import Path
 
 import keras
 from keras import ops
-from zea import tensor_ops
+from zea import Config, tensor_ops
 from zea.display import to_8bit
 from zea.utils import save_to_gif
 
@@ -85,8 +85,9 @@ def get_observation_fn(data_config, action=False):
     return observation_fn
 
 
-def lorenz_experiment_data(config, example=True, example_name="lorenz.gif"):
+def lorenz_experiment_data(config: Config, example=True, example_name="lorenz.gif"):
     # Defaults
+    config.unfreeze()
     if "batch_size" not in config:
         config.batch_size = 32
     if "nr_of_sequences" not in config:
@@ -101,6 +102,7 @@ def lorenz_experiment_data(config, example=True, example_name="lorenz.gif"):
         config.val_batch_size = config.batch_size
     if "val_nr_of_sequences" not in config:
         config.val_nr_of_sequences = config.val_batch_size
+    config.freeze()
 
     lorenz_kwargs = get_lorenz_kwargs(config)
     lorenz_train = Lorenz(partition="train", **lorenz_kwargs)
