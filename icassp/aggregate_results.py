@@ -26,7 +26,7 @@ plt.style.use("pyutils/styles/icassp.mplstyle")
 if DARKMODE:
     plt.style.use("pyutils/styles/darkmode.mplstyle")
 
-sweep_folder = Path(f"{RESULTS_DIR}/lorenz/icassp/tracking-performance-240910")
+sweep_folder = Path(f"{RESULTS_DIR}/lorenz/icassp/tracking-performance")
 metric = "l2norm_wm"
 timestamps = []
 metrics_files = sweep_folder.rglob("metrics-val-final.csv")
@@ -56,7 +56,7 @@ for metrics_file in metrics_files:
     _timestamp = int(splits[-1])
     if _timestamp not in timestamps and timestamps != []:
         continue
-    config = Config.load_from_yaml(config_path)
+    config = Config.from_yaml(config_path)
     metrics = pd.read_csv(metrics_file)
     if model not in results.keys():
         results[model] = {}

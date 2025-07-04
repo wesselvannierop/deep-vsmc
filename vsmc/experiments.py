@@ -5,7 +5,6 @@ from pathlib import Path
 
 import keras
 import wandb
-
 from zea import Config, log
 from zea.utils import get_date_string
 
@@ -47,7 +46,7 @@ class Experiment:
         if isinstance(config, (str, Path)):
             config_path = Path(config)
             assert config_path.exists(), f"Config file does not exist: {config_path}"
-            config = Config.load_from_yaml(config_path)
+            config = Config.from_yaml(config_path)
             config.config_path = str(config_path)  # Save the config path
             print(f"Setting up experiment for: {log.yellow(config.config_path)}")
         elif isinstance(config, dict):

@@ -32,8 +32,8 @@ import time
 from pathlib import Path
 
 import numpy as np
-
 from zea import Config
+
 from vsmc.experiments import setup_experiment
 from vsmc.learned_pf import dpf_run
 from vsmc.sweeper import Sweeper
@@ -45,18 +45,15 @@ if __name__ == "__main__":
         f"results/lorenz/icassp/partial-observations-tracking-performance-250103"
     )
     config_paths = {
-        "dpf": "dpf/experiments/icassp/dpf_lorenz_partial_observations.yaml",
-        # "dpf_evolution": "dpf/experiments/icassp/transition-known/dpf_lorenz_evolution.yaml",
-        "bpf": "dpf/experiments/icassp/bootstrap_lorenz.yaml",
-        # "bpf_evolution": "dpf/experiments/icassp/transition-known/bootstrap_lorenz.yaml",
-        "bpf10x": "dpf/experiments/icassp/bootstrap_lorenz_10x.yaml",
-        # "ekpf": "dpf/experiments/icassp/ekpf_lorenz.yaml",
-        # "ekpf_evolution": "dpf/experiments/icassp/transition-known/ekpf_lorenz.yaml",
-        # "encoder": "dpf/experiments/icassp/encoder_lorenz_partial_observations.yaml",
+        "dpf": "configs/icassp/dpf_lorenz_partial_observations.yaml",
+        "bpf": "configs/icassp/bootstrap_lorenz.yaml",
+        "bpf10x": "configs/icassp/bootstrap_lorenz_10x.yaml",
+        "ekpf": "configs/icassp/ekpf_lorenz.yaml",
+        "encoder": "configs/icassp/encoder_lorenz_partial_observations.yaml",
     }
 
     for model, config_path in config_paths.items():
-        base_config = Config.load_from_yaml(config_path)
+        base_config = Config.from_yaml(config_path)
         base_config.freeze()
         sweep_name = f"icassp-{model}-{timestamp}"
 

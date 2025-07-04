@@ -26,7 +26,7 @@ if DARKMODE:
     plt.style.use("pyutils/styles/darkmode.mplstyle")
 
 sweep_folder = Path(
-    f"{RESULTS_DIR}/lorenz/icassp/partial-observations-tracking-performance-240909"
+    f"{RESULTS_DIR}/lorenz/icassp/partial-observations-tracking-performance"
 )
 # metric = "elbo"
 # metric = "kl"
@@ -69,7 +69,7 @@ for metrics_file in metrics_files:
     _timestamp = int(splits[-1])
     if timestamps != [] and _timestamp not in timestamps:
         continue
-    config = Config.load_from_yaml(config_path)
+    config = Config.from_yaml(config_path)
     metrics = pd.read_csv(metrics_file)
     if metric in metrics.columns:
         p_occlusion = (

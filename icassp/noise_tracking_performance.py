@@ -7,8 +7,8 @@ import time
 from pathlib import Path
 
 import numpy as np
-
 from zea import Config
+
 from vsmc.experiments import setup_experiment
 from vsmc.learned_pf import dpf_run
 from vsmc.sweeper import Sweeper
@@ -35,19 +35,18 @@ if __name__ == "__main__":
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
     experiment_path = Path(
-        f"{args.output_dir}/dpf/lorenz/icassp/tracking-performance-240910"
+        f"{args.output_dir}/dpf/lorenz/icassp/tracking-performance"
     )
     config_paths = {
-        # "dpf": "dpf/configs/dpf_lorenz_train_awgn.yaml",  # train
-        "dpf": "dpf/experiments/icassp/dpf_lorenz.yaml",
-        "bpf10x": "dpf/experiments/icassp/bootstrap_lorenz_10x.yaml",
-        "bpf": "dpf/experiments/icassp/bootstrap_lorenz.yaml",
-        "ekpf": "dpf/experiments/icassp/ekpf_lorenz.yaml",
-        "encoder": "dpf/experiments/icassp/encoder_lorenz.yaml",
+        "dpf": "configs/icassp/dpf_lorenz.yaml",
+        "bpf10x": "configs/icassp/bootstrap_lorenz_10x.yaml",
+        "bpf": "configs/icassp/bootstrap_lorenz.yaml",
+        "ekpf": "configs/icassp/ekpf_lorenz.yaml",
+        "encoder": "configs/icassp/encoder_lorenz.yaml",
     }
 
     for key, config_path in config_paths.items():
-        base_config = Config.load_from_yaml(config_path)
+        base_config = Config.from_yaml(config_path)
         sweep_name = f"icassp-{key}-{timestamp}"
         sweeper = Sweeper(
             base_config,
