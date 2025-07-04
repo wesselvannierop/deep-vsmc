@@ -147,9 +147,11 @@ class Masker:
         return self.mask_image_given_masks(images, self.cached_masks), self.cached_masks
 
 
-def trim_velocity(particles, dims=3):
+def trim_velocity(particles, dims=(3,)):
     # particles: (..., dx)
-    return particles[..., :dims]
+    # dims is a tuple of indices, e.g., (3, 3, 2)
+    slices = tuple(slice(None, d) for d in dims)
+    return particles[(...,) + slices]
 
 
 def _mask_image(images, masks):
@@ -214,8 +216,7 @@ class GaussianTransitionModel(TransitionModelBase):
 
     def transition_dist(self, state):
         # Apply evolution model (could be identity)
-        particles = state.particles
-        particles = self.evolution_model(particles)
+        particles = self.evolution_model(state.particles)
 
         return GaussianMixture(
             particles, self.state_scale_diag, reinterpreted_batch_ndims=2

@@ -54,11 +54,6 @@ def mc_kld(a, b, n_samples=NUM_MC_SAMPLES, batch_size=BATCH_SIZE):
     return partial_sum / n_samples
 
 
-class MultivariateNormalFullCovariance(tfd.MultivariateNormalTriL):
-    def __init__(self, mean, covariance):
-        super().__init__(mean, ops.cholesky(covariance))
-
-
 if __name__ == "__main__":
     # Example:
     locs = tf.constant([[-1.0], [1.0]])

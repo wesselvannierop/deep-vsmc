@@ -5,6 +5,7 @@ vsmc.runnable.runnable()
 
 import warnings
 
+import numpy as np
 import tensorflow as tf
 from keras import ops
 from zea import tensor_ops
@@ -60,6 +61,8 @@ class ProposalModelEKF(ProposalModelBase):
         self.transition_fn = transition_fn
         self.transition_jacobian_fn_batch = transition_jacobian_fn_batch
 
+        self.is_ekf = True  # Mark this model as an EKF proposal model
+
     def proposal_dist(self, state, observation):
         particles = state.particles
         particles_cov = state.particles_cov
@@ -91,19 +94,16 @@ class ProposalModelEKF(ProposalModelBase):
         filtered_covs = ops.reshape(filtered_cov, state.particles_cov.shape)
         return tfd.MultivariateNormalFullCovariance(filtered_means, filtered_covs)
 
-    def propose(self, state: State, inputs, observation, seed=None):
-        dist = self.proposal_dist(state, observation)
+    def propose(self, proposal_dist, state: State, inputs, seed=None):
         if self.sample_mean:
-            proposed_particles = dist.mean()
+            proposed_particles = proposal_dist.mean()
         else:
-            proposed_particles = dist.sample(seed=seed)
-        particles_cov = dist.covariance()
+            proposed_particles = proposal_dist.sample(seed=seed)
+        particles_cov = proposal_dist.covariance()
         return state.evolve(particles=proposed_particles, particles_cov=particles_cov)
 
-    def loglikelihood(self, proposed_state: State, state: State, inputs, observation):
-        dist = self.proposal_dist(state, observation)
-        log_prob = dist.log_prob(proposed_state.particles)
-        return log_prob
+    def loglikelihood(self, proposal_dist, proposed_state: State, inputs):
+        return proposal_dist.log_prob(proposed_state.particles)
 
 
 class TransitionModelEKF(TransitionModelBase):
@@ -119,6 +119,8 @@ class TransitionModelEKF(TransitionModelBase):
         self.sample_mean = sample_mean
         self.transition_fn = transition_fn
         self.transition_jacobian_fn_batch = transition_jacobian_fn_batch
+
+        self.is_ekf = True  # Mark this model as an EKF transition model
 
     def transition_dist(self, prior_state):
         # taken from tfp -> extended_kalman_filter_one_step
@@ -183,7 +185,7 @@ def setup_ekpf(config, coord_dims):
     if evolution_model_name != "velocity":
         state_dims = coord_dims
     else:
-        state_dims = 2 * coord_dims
+        state_dims = (2 * np.array(coord_dims)).tolist()
 
     state_scale_diag = config.transition.sigma * ops.ones(state_dims)
     transition_model = TransitionModelEKF(
@@ -194,9 +196,9 @@ def setup_ekpf(config, coord_dims):
     )
 
     observation_scale_diag = config.data.awgn_std * ops.ones(
-        config.data.img_size**2, "float32"
+        ops.prod(config.data.image_shape), "float32"
     )
-    if config.sample_mean and config.n_particles > 1:
+    if config.sample_mean and config.dpf.n_particles > 1:
         warnings.warn("sample_mean only makes sense with one particle")
     proposal_model = ProposalModelEKF(
         state_scale_diag=state_scale_diag,
@@ -209,10 +211,3 @@ def setup_ekpf(config, coord_dims):
     state2coord = lambda x: trim_velocity(x, coord_dims)
 
     return proposal_model, transition_model, state2coord, state_dims
-
-
-if __name__ == "__main__":
-    from vsmc.learned_pf import vsmc_run
-
-    config, run = setup_experiment("dpf/configs/ekpf_lorenz.yaml")
-    dpf_run(config)

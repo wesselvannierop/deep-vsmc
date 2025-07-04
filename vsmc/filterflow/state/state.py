@@ -6,6 +6,8 @@ Important sources:
 - https://www.tensorflow.org/guide/extension_type
 - https://www.tensorflow.org/api_docs/python/tf/TensorArray
 - https://www.tensorflow.org/guide/function
+
+NOTE: particles_cov is only used by the EKF.
 """
 
 import pickle
@@ -13,10 +15,10 @@ from collections import namedtuple
 
 import jax
 import keras
+import numpy as np
 import tensorflow as tf
 from jax.tree_util import register_pytree_node
 from keras import ops
-
 from zea.tensor_ops import extend_n_dims
 
 
@@ -31,6 +33,7 @@ class StateMethods:
         "resampling_correction",
         "t",
         "ess",
+        "particles_cov",
     ]
 
     @property
@@ -153,6 +156,7 @@ class StateMethods:
             self.resampling_correction,
             self.t,
             self.ess,
+            self.particles_cov,
         )
 
         aux_data = None  # aux_data must contain static, hashable data.
@@ -171,6 +175,7 @@ class StateMethods:
         obj.resampling_correction = children[6]
         obj.t = children[7]
         obj.ess = children[8]
+        obj.particles_cov = children[9]
         return obj
 
     def _sample_particle_idx(self):
@@ -190,6 +195,7 @@ class State(StateMethods):
         t=None,
         action=None,
         ess=None,
+        particles_cov=None,
         **kwargs,
     ):
         self.particles = particles
@@ -201,6 +207,7 @@ class State(StateMethods):
         self.t = t
         self.action = action
         self.ess = ess
+        self.particles_cov = particles_cov
 
         # If flat_particles is provided, reshape and overwrite particles
         for kwarg in kwargs:
@@ -236,6 +243,13 @@ class State(StateMethods):
             self.action = ops.zeros(self.batch_size)
         if self.ess is None:
             self.ess = ops.zeros(self.batch_size) + self.n_particles_float
+        if self.particles_cov is None:
+            # NOTE: just set to some tensor, particles_cov should be set if it is used!
+            dim = np.prod(self.dimension)
+            eye = ops.eye(dim)
+            self.particles_cov = ops.broadcast_to(
+                eye, (self.batch_size, self.n_particles, dim, dim)
+            )
 
     @property
     def batch_axis(self):
@@ -261,6 +275,7 @@ class StateTF(State, tf.experimental.ExtensionType):
     t: tf.Tensor
     action: tf.Tensor
     ess: tf.Tensor
+    particles_cov: tf.Tensor
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -284,6 +299,7 @@ class StateSeries(StateMethods):
         self.t = state_array.t
         self.action = state_array.action
         self.ess = state_array.ess
+        self.particles_cov = state_array.particles_cov
 
     @property
     def time_axis(self):
@@ -315,6 +331,7 @@ class StateSeries(StateMethods):
             t=index_default_to_none(self.t, time),
             action=index_default_to_none(self.action, time),
             ess=index_default_to_none(self.ess, time),
+            particles_cov=index_default_to_none(self.particles_cov, time),
         )
 
     def __getitem__(self, item: int):
@@ -341,6 +358,7 @@ class StateSeriesTF(StateSeries, tf.experimental.ExtensionType):
     t: tf.Tensor
     action: tf.Tensor
     ess: tf.Tensor
+    particles_cov: tf.Tensor
 
     def __init__(self, state_array):
         self.particles = state_array.particles.stack()
@@ -353,6 +371,7 @@ class StateSeriesTF(StateSeries, tf.experimental.ExtensionType):
         self.t = state_array.t.stack()
         self.action = state_array.action.stack()
         self.ess = state_array.ess.stack()
+        self.particles_cov = state_array.particles_cov.stack()
 
 
 StateArray = namedtuple("StateArray", StateMethods.ATTRIBUTES)
@@ -387,7 +406,7 @@ def write_state_array_prealloc(
     state: State, n_observations=None, state_array=None, time=0
 ):
     """Preallocate the state array and write the state at the given time step.
-    Probably can replace the jax specific implementation with this one.
+    TODO: Probably can replace the jax specific implementation with this one.
     """
     tas = []
     for attr_name in StateMethods.ATTRIBUTES:
@@ -426,13 +445,6 @@ def write_state_array_jax(state: State, n_observations=None, state_array=None, t
 
 def create_tensor_array_jax(shape, dtype, n_observations):
     return jax.numpy.zeros((n_observations, *shape), dtype=dtype)
-
-
-class KFState(State):
-    # TODO: finalize the KFState class and support in the rest of the code
-    def __init__(self, particles_cov, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.particles_cov = particles_cov
 
 
 for cls in StateMethods.__subclasses__():

@@ -1,8 +1,3 @@
-if __name__ == "__main__":
-    import vsmc.runnable  # isort: skip
-
-    vsmc.runnable.runnable(device="auto:1", hide_first_for_tf=False)
-
 import math
 import warnings
 from pathlib import Path

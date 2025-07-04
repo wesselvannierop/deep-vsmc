@@ -29,6 +29,10 @@ class EncoderProposalModel(ProposalModelBase):
 
 
 class DummyTransitionModel(TransitionModelBase):
+    def transition_dist(self, state):
+        # Dummy transition distribution, just return the particles
+        return state.particles
+
     def sample(self, state, inputs, seed=None):
         return state
 

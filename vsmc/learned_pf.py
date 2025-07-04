@@ -590,6 +590,7 @@ class LearnedPF(BaseTrainer):
                 masks=masks,
                 dump=self.dump_results,
                 likelihood_sigma=self.elbo_likelihood_sigma,
+                is_ekf=getattr(self.transition_model, "is_ekf", False),
             )
             results |= {
                 "elbo": ops.mean(elbo),
@@ -635,6 +636,7 @@ class LearnedPF(BaseTrainer):
         likelihood_sigma=0.1,  # TODO: sweep over sigma
         mc_samples=1000,
         mc_batch_size=30,
+        is_ekf=False,
     ):
         # TODO: elbo computation is lorenz only! (adapt for other state dimensions etc)
         # TODO: exclude initial state from evaluation, not sure if it is already done
@@ -645,8 +647,7 @@ class LearnedPF(BaseTrainer):
         # Trim the velocity from the state
         particles = self.state2coord(states.particles)
 
-        if hasattr(states, "particles_cov"):
-            # This means that we are probably evaluating the EKF
+        if is_ekf:
             print("ELBO for EKF")
             particles_cov = states.particles_cov[..., :3, :3]
             components_distribution = tfd.MultivariateNormalFullCovariance(
