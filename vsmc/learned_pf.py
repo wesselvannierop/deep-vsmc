@@ -50,10 +50,6 @@ def check_config(config):
     # When evaluating, a checkpoint should be provided
     elif config.model == "learned":
         assert config.training.checkpoint is not None, "Need a checkpoint to evaluate"
-    if config.training.get("checkpoint") is not None and config.get("train"):
-        assert hasattr(config, "epoch_checkpoint"), (
-            "Need epoch_checkpoint for checkpoint"
-        )
 
     assert not "validation" in config, "Using old config -> refactor!"
 
@@ -1002,7 +998,7 @@ def dpf_run(
                 config, dataset, val_dataset, recompile_now_callable
             ),
             steps_per_epoch=steps_per_epoch,
-            initial_epoch=config.get("epoch_checkpoint", 0),
+            initial_epoch=config.training.get("initial_epoch", 0),
         )
         pf.save(config.save_path / "pf-last.keras")
 
