@@ -86,6 +86,22 @@ def get_observation_fn(data_config, action=False):
 
 
 def lorenz_experiment_data(config, example=True, example_name="lorenz.gif"):
+    # Defaults
+    if "batch_size" not in config:
+        config.batch_size = 32
+    if "nr_of_sequences" not in config:
+        config.nr_of_sequences = 1024
+    if "sequence_length" not in config:
+        config.sequence_length = 8
+
+    # Defaults for validation
+    if "val_sequence_length" not in config:
+        config.val_sequence_length = 128
+    if "val_batch_size" not in config:
+        config.val_batch_size = config.batch_size
+    if "val_nr_of_sequences" not in config:
+        config.val_nr_of_sequences = config.val_batch_size
+
     lorenz_kwargs = get_lorenz_kwargs(config)
     lorenz_train = Lorenz(partition="train", **lorenz_kwargs)
     lorenz_val = Lorenz(partition="val", **lorenz_kwargs)

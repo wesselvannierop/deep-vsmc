@@ -882,7 +882,7 @@ def build_and_compile(pf, config):
     return pf
 
 
-def dpf_evaluate(pf, config, val_dataset, n_val_epochs=1, verbose="auto"):
+def dpf_evaluate(pf, config, val_dataset, n_val_epochs=20, verbose="auto"):
     run_eagerly = config.get("run_eagerly", False) or config.dpf.get(
         "enable_compute_elbo", False
     )
@@ -951,7 +951,7 @@ def dpf_run(
     else:
         n_retrain = 0
     base_save_path = config.save_path
-    n_val_epochs = config.get("n_val_epochs", 1)
+    n_val_epochs = config.get("n_val_epochs", 20)
     only_val = n_retrain == 0
 
     # Create the pf instance if not provided

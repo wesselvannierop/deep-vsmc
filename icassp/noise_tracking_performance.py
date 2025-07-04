@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 from zea import Config
 
-from vsmc.experiments import setup_experiment
+from vsmc.experiments import debugging, setup_experiment
 from vsmc.learned_pf import dpf_run
 from vsmc.sweeper import Sweeper
 
@@ -17,7 +17,7 @@ from vsmc.sweeper import Sweeper
 def parse_args():
     parser = argparse.ArgumentParser(description="DPF")
     parser.add_argument(
-        "--run_sweep",
+        "--only_prepare",
         action="store_true",
         help="Actually run the sweep",
     )
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     args = parse_args()
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
-    experiment_path = Path(f"{args.output_dir}/dpf/lorenz/icassp/tracking-performance")
+    experiment_path = Path(f"{args.output_dir}/lorenz/icassp/tracking-performance")
     config_paths = {
         "dpf": "configs/icassp/dpf_lorenz.yaml",
         "bpf10x": "configs/icassp/bootstrap_lorenz_10x.yaml",
@@ -60,13 +60,16 @@ if __name__ == "__main__":
             config.save_to_yaml(
                 str(sweeper.experiment_path / f"config_{job_index}.yaml")
             )
+            if debugging:
+                config.n_val_epochs = 1  # speed up for debugging
             if key != "dpf":
-                config.likelihood_sigma = config.data.awgn_std
-            config.validation.elbo_likelihood_sigma = config.data.awgn_std
+                config.observation_model = {}
+                config.observation_model.sigma = config.data.awgn_std
+            config.dpf.elbo_likelihood_sigma = config.data.awgn_std
             if hasattr(config, "val_data"):
                 config.val_data.awgn_std = config.data.awgn_std
 
-            if args.run_sweep:
+            if not args.only_prepare:
                 config, run = setup_experiment(config=config)
                 config.freeze()
                 dpf_run(config)

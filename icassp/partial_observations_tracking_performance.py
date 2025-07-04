@@ -4,7 +4,7 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description="DPF")
     parser.add_argument(
-        "--run_sweep",
+        "--only_prepare",
         action="store_true",
         help="Actually run the sweep",
     )
@@ -34,7 +34,7 @@ from pathlib import Path
 import numpy as np
 from zea import Config
 
-from vsmc.experiments import setup_experiment
+from vsmc.experiments import debugging, setup_experiment
 from vsmc.learned_pf import dpf_run
 from vsmc.sweeper import Sweeper
 
@@ -77,8 +77,10 @@ if __name__ == "__main__":
             config.save_to_yaml(
                 str(sweeper.experiment_path / f"config_{job_index}.yaml")
             )
+            if debugging:
+                config.n_val_epochs = 1  # speed up for debugging
 
-            if args.run_sweep or True:
+            if not args.only_prepare:
                 config, run = setup_experiment(config=config)
                 config.freeze()
                 dpf_run(config, verbose=False)
