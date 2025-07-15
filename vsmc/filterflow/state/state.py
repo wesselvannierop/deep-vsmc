@@ -281,12 +281,6 @@ class StateTF(State, tf.experimental.ExtensionType):
         super().__init__(*args, **kwargs)
 
 
-def index_default_to_none(value, index: int):
-    """Return the value at index if it exists, otherwise return None."""
-    not_empty = value is not None and len(value) > index
-    return value[index] if not_empty else None
-
-
 class StateSeries(StateMethods):
     def __init__(self, state_array):
         self.particles = state_array.particles
@@ -320,18 +314,16 @@ class StateSeries(StateMethods):
     def read(self, time: int):
         """Read the state at the given time step."""
         return State(
-            particles=index_default_to_none(self.particles, time),
-            log_weights=index_default_to_none(self.log_weights, time),
-            weights=index_default_to_none(self.weights, time),
-            log_likelihoods=index_default_to_none(self.log_likelihoods, time),
-            ancestor_indices=index_default_to_none(self.ancestor_indices, time),
-            resampling_correction=index_default_to_none(
-                self.resampling_correction, time
-            ),
-            t=index_default_to_none(self.t, time),
-            action=index_default_to_none(self.action, time),
-            ess=index_default_to_none(self.ess, time),
-            particles_cov=index_default_to_none(self.particles_cov, time),
+            particles=self.particles[time],
+            log_weights=self.log_weights[time],
+            weights=self.weights[time],
+            log_likelihoods=self.log_likelihoods[time],
+            ancestor_indices=self.ancestor_indices[time],
+            resampling_correction=self.resampling_correction[time],
+            t=self.t[time],
+            action=self.action[time],
+            ess=self.ess[time],
+            particles_cov=self.particles_cov[time],
         )
 
     def __getitem__(self, item: int):

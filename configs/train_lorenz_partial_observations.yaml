@@ -41,13 +41,11 @@ proposal:
 model: learned # bootstrap, learned
 experiment: lorenz
 
-
 save_path: "results/{experiment}/{timestamp}-{model}-awgn"
+train: True
 
 # For training
 training:
-  train: True  # if True, train the model, otherwise load the trained model
-  n_retrain: 1
   checkpoint: preset:dpf_lorenz_general
   epochs: 120 # this is 32 * 90 = 2880 iterations
   optimizer:

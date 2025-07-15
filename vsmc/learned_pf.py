@@ -735,7 +735,7 @@ class LearnedPF(BaseTrainer):
         return elbo, kl, log_likelihood, entropy, joint, elbo2
 
 
-def datasets(config, only_val=False, augmentations=None):
+def datasets(config, augmentations=None):
     """
     Should return a tuple of two datasets: training and validation
     Batches should be a tuple of:
@@ -920,9 +920,10 @@ def get_fit_callbacks(config, dataset, val_dataset, recompile_now_callable):
             verbose=1,
             mode="min",
         ),
-        MyWandbMetricsLogger(log_freq="batch"),
         *get_val_callbacks(config, val_dataset),
     ]
+    if "wandb" in config:
+        callbacks.append(MyWandbMetricsLogger(log_freq="batch"))
     return callbacks
 
 
@@ -969,7 +970,7 @@ def dpf_run(
 
     # Load datasets if not provided
     if dataset is None or val_dataset is None:
-        dataset, val_dataset = datasets(config, only_val=only_val)
+        dataset, val_dataset = datasets(config)
 
     # Train (multiple times if n_retrain > 1)
     for i in range(n_retrain):
@@ -982,13 +983,11 @@ def dpf_run(
             pf = dpf_prep(config, verbose=verbose)
 
         print(f"start optimization (run {i + 1}/{n_retrain})")
-        if i == 0:
-            config.training._mark_accessed("epochs")
-            config.training._mark_accessed("validation_freq")
-            config._log_all_unaccessed()
         # limit steps per epoch to avoid long epoch time
         steps_per_epoch = int(1e4) if len(dataset) > 1e4 else None
-        recompile_now_callable = partial(pf.recompile_now, seq_len=config.data.n_frames)
+        recompile_now_callable = partial(
+            pf.recompile_now, seq_len=config.sequence_length
+        )
         pf.fit(
             dataset,
             epochs=config.training.epochs,
@@ -1006,5 +1005,4 @@ def dpf_run(
     if only_val:
         dpf_evaluate(pf, config, val_dataset, n_val_epochs=n_val_epochs)
 
-    config._log_all_unaccessed()
     return pf

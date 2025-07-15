@@ -123,7 +123,7 @@ def lorenz_experiment_data(config: Config, example=True, example_name="lorenz.gi
         val_kwargs = train_kwargs
 
     # Train
-    if config.get("training", {}).get("train", False):
+    if config.get("train", False):
         dataset = lorenz_train.tf_dataset(
             batch_size=config.batch_size,
             seq_length=config.sequence_length,

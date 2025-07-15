@@ -19,9 +19,9 @@ def runnable(
 
     # Set CUDA_VISIBLE_DEVICES
     if os.environ.get("CUDA_VISIBLE_DEVICES") is None:
-        from zea.internal.device import get_device
+        import zea
 
-        get_device(device)
+        zea.init_device(device, allow_preallocate=False)
 
         if hide_first_for_tf:
             import tensorflow as tf
