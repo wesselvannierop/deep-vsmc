@@ -14,7 +14,6 @@ from keras import ops
 
 # import because can be nice to have
 from keras.src.optimizers.base_optimizer import clip_by_global_norm, global_norm
-
 from zea.utils import translate
 
 backend = keras.backend.backend()
@@ -175,6 +174,7 @@ def fit_gaussian(data, weights, eps=1e-6):
     weighted_covariances = ops.einsum(
         "...ik,...il,...i->...kl", deviations, deviations, normalized_weights
     )
-    weighted_covariances + ops.eye(weighted_covariances.shape[-1]) * eps
+    # Add eps to the diagonal for numerical stability
+    weighted_covariances += ops.eye(weighted_covariances.shape[-1]) * eps
 
     return weighted_means, weighted_covariances
