@@ -11,10 +11,10 @@ import tensorflow as tf
 from jax.scipy.stats import gaussian_kde as jax_kde
 from keras import ops
 from scipy.integrate import odeint
-
-import vsmc.tfp_wrapper as tfp
 from zea import log, tensor_ops
 from zea.utils import translate
+
+import vsmc.tfp_wrapper as tfp
 from vsmc.data.utils import backwards_compatibility
 
 tfd = tfp.distributions
@@ -530,7 +530,7 @@ def compute_prior():
     plt.savefig("prior.png")
 
 
-def compute_kde_prior(len_prior=10000, plot=False):
+def compute_kde_prior(len_prior=10000, plot=False, sample_dt=0.02):
     dataset = Lorenz(
         partition="train",
         no_pickle=True,
@@ -538,7 +538,7 @@ def compute_kde_prior(len_prior=10000, plot=False):
         test_tt=0,
         val_tt=0,
         tr_tt=len_prior,
-        sample_dt=0.02,
+        sample_dt=sample_dt,
     )
     prior = dataset.get_data(False)[0]
     x, y, z = prior[:, 0], prior[:, 1], prior[:, 2]

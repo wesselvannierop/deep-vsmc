@@ -35,10 +35,13 @@ import vsmc.runnable  # isort: skip
 args = parse_args()
 vsmc.runnable.runnable(args.backend, args.device)
 
+from vsmc.data.lorenz_data import compute_kde_prior
 from vsmc.experiments import setup_experiment
 from vsmc.learned_pf import dpf_run
 
 if __name__ == "__main__":
+    compute_kde_prior()
+
     config, run = setup_experiment(args.config, debug_run=args.debug_run)
 
     pf = dpf_run(config)
