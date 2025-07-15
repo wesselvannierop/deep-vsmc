@@ -1,26 +1,25 @@
-[tool.poetry]
+[project]
 name = "vsmc"
 version = "0.1.0"
 description = ""
-authors = ["Wessel van Nierop <40076995+wesselvannierop@users.noreply.github.com>"]
+authors = [
+    { name = "Wessel van Nierop", email = "40076995+wesselvannierop@users.noreply.github.com" }
+]
 readme = "README.md"
+requires-python = ">=3.10,<3.13"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-wandb = ">=0.16, ^0"
-SimpleITK = "^2.3"
-huggingface_hub = { version = ">=0.22, ^0", extras = ["cli"] }
-
-# keras==3.6 produces a bug that will fail model.fit after one epoch in graph mode.
-keras = "^3.4"
-
-# zea is pinned to 0.0.1 because it is being actively developed and the API may change.
-zea = { version = "==0.0.1", python = ">=3.10,<3.13" }
-tensorflow = { version = "^2.16", extras = ["and-cuda"] }
-"tensorflow-probability" = "^0"
-tf_keras = { version = "^2.16", extras = ["and-cuda"] }
-jax = { version = "^0.4", extras = ["cuda12"] }
-pandas = "^2.1"
+dependencies = [
+    "wandb>=0.16",
+    "SimpleITK>=2.3",
+    "huggingface_hub[cli]>=0.22",
+    "keras>=3.4",
+    "zea==0.0.2; python_version >= '3.10' and python_version < '3.13'",
+    "tensorflow[and-cuda]==2.16.2",
+    "tensorflow-probability==0.24.0",
+    "tf_keras==2.16",
+    "jax[cuda12]>=0.4",
+    "pandas>=2.1"
+]
 
 [build-system]
 requires = ["poetry-core"]
