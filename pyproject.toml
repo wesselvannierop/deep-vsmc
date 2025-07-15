@@ -18,6 +18,7 @@ keras = "^3.4"
 zea = { version = "==0.0.1", python = ">=3.10,<3.13" }
 tensorflow = { version = "^2.16", extras = ["and-cuda"] }
 "tensorflow-probability" = "^0"
+tf_keras = { version = "^2.16", extras = ["and-cuda"] }
 jax = { version = "^0.4", extras = ["cuda12"] }
 pandas = "^2.1"
 
